@@ -26,7 +26,7 @@ Generated files:
 
 ## Documentation
 
-For detailed development guidelines, please refer to: [Development Guide](doc/development_guide.md)
+For detailed development guidelines, please refer to: [Development Guide](docs/development_guide.md)
 
 ## Acknowledgments
 
