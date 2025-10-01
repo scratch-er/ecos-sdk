@@ -4,12 +4,13 @@
 ## Fast Start
 
 ### 1. Environment Setup
-Download and set up the RISC-V cross-compilation toolchain:
+Download and set up the [RISC-V cross-compilation toolchain](https://github.com/ecoslab/ecos-embed-sdk/releases/download/riscv-tools/riscv.zip):
 ```bash
 # Download the toolchain to the tools directory
 # Add to environment variables
 export PATH=$PATH:/path/to/ECOS_env/tools/riscv/bin
 # Make sure to add execute permissions to the toolchain directory
+chmod -R +x /path/to/ECOS_env/tools/riscv/
 ```
 
 ### 2. Compile Firmware
@@ -25,7 +26,7 @@ Generated files:
 
 ## Documentation
 
-For detailed development guidelines, please refer to: [Development Guide](doc/Development_Guide.md)
+For detailed development guidelines, please refer to: [Development Guide](doc/开发入门指南.md)
 
 ## Acknowledgments
 
