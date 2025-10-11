@@ -55,5 +55,10 @@ $(FIRMWARE_NAME).elf:
 clean:
 	rm -f *.elf *.hex *.bin *.txt
 
+clean_config:
+	rm -rf configs/generated configs/config configs/.config configs/.config.old
+
+
+include scripts/config.mk
 # 声明伪目标
 .PHONY: $(FIRMWARE_NAME).elf clean

@@ -1,0 +1,128 @@
+mainmenu "ECOS Embedded SDK Configuration"
+
+menu "Target Hardware Configuration"
+    choice
+        prompt "Target SoC Platform"
+        default SOC_RETROSOC
+        
+    config SOC_RETROSOC
+        bool "RetroSoC Platform"
+        help
+          RetroSoC RISC-V based embedded platform
+    endchoice
+    
+    config SOC_NAME
+        string
+        default "retrosoc" if SOC_RETROSOC
+        
+    config ARCH_RISCV32
+        bool
+        default y if SOC_RETROSOC
+        
+    config CPU_FREQ_MHZ
+        int "CPU Frequency (MHz)"
+        default 50
+        range 1 200
+endmenu
+
+menu "Peripheral Drivers"
+    config DRIVER_UART
+        bool "UART Driver Support"
+        default y
+        help
+          Enable UART driver for serial communication
+          
+    config DRIVER_GPIO
+        bool "GPIO Driver Support" 
+        default y
+        help
+          Enable GPIO driver for pin control
+          
+    config DRIVER_SPI
+        bool "SPI Driver Support"
+        default y
+        help
+          Enable SPI driver for serial peripheral interface
+          
+    config DRIVER_I2C
+        bool "I2C Driver Support"
+        default y
+        help
+          Enable I2C driver for inter-integrated circuit
+          
+    config DRIVER_PWM
+        bool "PWM Driver Support"
+        default n
+        help
+          Enable PWM driver for pulse width modulation
+          
+    config DRIVER_TIMER
+        bool "Timer Driver Support"
+        default y
+        help
+          Enable timer driver for timing functions
+endmenu
+
+menu "Build Configuration"
+    choice
+        prompt "Optimization Level"
+        default BUILD_OPT_SIZE
+        
+    config BUILD_OPT_NONE
+        bool "No optimization (-O0)"
+        
+    config BUILD_OPT_SIZE
+        bool "Optimize for size (-Os)"
+        
+    config BUILD_OPT_SPEED
+        bool "Optimize for speed (-O2)"
+        
+    config BUILD_OPT_MAX
+        bool "Maximum optimization (-O3)"
+    endchoice
+    
+    config BUILD_OPT_FLAGS
+        string
+        default "-O0" if BUILD_OPT_NONE
+        default "-Os" if BUILD_OPT_SIZE  
+        default "-O2" if BUILD_OPT_SPEED
+        default "-O3" if BUILD_OPT_MAX
+        
+    config BUILD_DEBUG
+        bool "Enable debug information"
+        default n
+        help
+          Add debug symbols to the firmware
+          
+    config BUILD_VERBOSE
+        bool "Verbose build output"
+        default n
+        help
+          Show detailed compilation commands
+endmenu
+
+menu "Firmware Configuration"
+    config FIRMWARE_NAME
+        string "Firmware name"
+        default "retrosoc_fw"
+        help
+          Name of the generated firmware file
+          
+    config FIRMWARE_VERSION
+        string "Firmware version"
+        default "1.0.0"
+        help
+          Version string for the firmware
+          
+    config STACK_SIZE
+        hex "Stack size"
+        default 0x1000
+        help
+          Size of the main stack in bytes
+          
+    config HEAP_SIZE  
+        hex "Heap size"
+        default 0x2000
+        help
+          Size of the heap in bytes
+endmenu

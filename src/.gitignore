@@ -1,0 +1,6 @@
+include/config
+include/config/**
+
+include/generated
+include/generated/**
+
