@@ -2,12 +2,12 @@
 
 static void gpio_set_output(uint32_t io_num)
 {
-    reg_gpio_enb |= (0x01 << io_num);
+    REG_GPIO_ENB |= (0x01 << io_num);
 }
 
 static void gpio_set_input(uint32_t io_num)
 {
-    reg_gpio_enb &= ~(0x01 << io_num);
+    REG_GPIO_ENB &= ~(0x01 << io_num);
 }
 
 void gpio_config(const gpio_config_t* config)
@@ -26,18 +26,18 @@ void gpio_config(const gpio_config_t* config)
                 gpio_set_output(io_num);
             }
         }
-    }
+    } while (io_num++ < 32);
 }
 
 void gpio_set_level(gpio_num_t gpio_num, gpio_level_t level){
     if (level == GPIO_LEVEL_HIGH){
-        reg_gpio_out |= (0x01 << gpio_num);
+        REG_GPIO_DATA |= (0x01 << gpio_num);
     }
     else{
-        reg_gpio_out &= ~(0x01 << gpio_num);
+        REG_GPIO_DATA &= ~(0x01 << gpio_num);
     }
 }
 
 int32_t gpio_get_level(gpio_num_t gpio_num){
-    return (reg_gpio_in >> gpio_num) & 0x01;
+    return (REG_GPIO_DATA >> gpio_num) & 0x01;
 }

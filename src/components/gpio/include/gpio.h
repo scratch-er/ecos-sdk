@@ -6,12 +6,7 @@
 #ifndef TINYGPIO_H__
 #define TINYGPIO_H__
 
-#include "tinygpio_type.h"
-
-typedef struct {
-    uint64_t pin_bit_mask; // 引脚位掩码，用于设置或读取多个引脚
-    gpio_mode_t mode; // GPIO模式，输入或输出
-} gpio_config_t;
+#include "gpio_type.h"
 
 /**
  * @brief GPIO配置函数

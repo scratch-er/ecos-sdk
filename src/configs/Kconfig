@@ -21,7 +21,7 @@ menu "Target Hardware Configuration"
         
     config CPU_FREQ_MHZ
         int "CPU Frequency (MHz)"
-        default 50
+        default 72
         range 1 200
 endmenu
 
@@ -114,15 +114,4 @@ menu "Firmware Configuration"
         help
           Version string for the firmware
           
-    config STACK_SIZE
-        hex "Stack size"
-        default 0x1000
-        help
-          Size of the main stack in bytes
-          
-    config HEAP_SIZE  
-        hex "Heap size"
-        default 0x2000
-        help
-          Size of the heap in bytes
 endmenu

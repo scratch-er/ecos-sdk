@@ -1,3 +1,10 @@
+#include "stdint.h"
+
+/* ========== GPIO 寄存器组 ========== */
+#define REG_GPIO_DATA         (*(volatile uint32_t*)0x03000000)  // GPIO数据寄存器
+#define REG_GPIO_ENB          (*(volatile uint32_t*)0x03000004)  // GPIO使能寄存器
+#define REG_GPIO_PUB          (*(volatile uint32_t*)0x03000008)  // GPIO上拉使能寄存器
+#define REG_GPIO_PDB          (*(volatile uint32_t*)0x0300000c)  // GPIO下拉使能寄存器
 
 typedef enum {
     GPIO_NUM_0 = 0,
@@ -28,3 +35,7 @@ typedef enum{
     GPIO_LEVEL_HIGH = 1,
 } gpio_level_t;
 
+typedef struct {
+    uint64_t pin_bit_mask; // 引脚位掩码，用于设置或读取多个引脚
+    gpio_mode_t mode; // GPIO模式，输入或输出
+} gpio_config_t;
