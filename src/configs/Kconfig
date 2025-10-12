@@ -19,12 +19,30 @@ menu "Target Hardware Configuration"
         bool
         default y if SOC_RETROSOC
         
+endmenu
+
+menu "System Configuration"
     config CPU_FREQ_MHZ
         int "CPU Frequency (MHz)"
         default 72
         range 1 200
-endmenu
-
+    config UART_BAUD_RATE
+        int "UART Baud Rate"
+        default 115200
+        range 1 1000000
+    config PSRAM_NUM
+        int "Number of PSRAM Chips"
+        default 1
+        range 1 4
+    config PSRAM_SCLK_MIN_FREQ_MHZ
+        int "PSRAM SCLK Minimum Frequency (MHz)"
+        default 12
+        range 1 200
+    config PSRAM_SCLK_MAX_FREQ_MHZ
+        int "PSRAM SCLK Maximum Frequency (MHz)"
+        default 133
+        range 1 200
+        
 menu "Peripheral Drivers"
     config DRIVER_UART
         bool "UART Driver Support"

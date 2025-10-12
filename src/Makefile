@@ -4,6 +4,9 @@
 # RISC-V 交叉编译工具链前缀
 CROSS=riscv32-unknown-elf-
 BUILD_DIR := build
+
+# 包含配置文件
+-include configs/.config
 # 编译器标志配置
 # -mabi=ilp32: 使用ILP32 ABI
 # -march=rv32im: RV32I基础指令集 + M乘除法扩展
@@ -15,13 +18,40 @@ CFLAGS := -mabi=ilp32 \
 	  -ffreestanding \
 	  -nostdlib
 
-# 固件名称
+# 根据配置文件添加编译优化选项
+ifdef CONFIG_BUILD_OPT_FLAGS
+CFLAGS += $(subst ",,$(CONFIG_BUILD_OPT_FLAGS))
+endif
+
+# 根据配置文件添加调试选项
+ifdef CONFIG_BUILD_DEBUG
+CFLAGS += -g -DDEBUG
+endif
+
+# 根据配置文件添加详细输出选项
+ifdef CONFIG_BUILD_VERBOSE
+VERBOSE := 1
+endif
+
+# 固件名称 - 从配置文件读取，如果未定义则使用默认值
+ifdef CONFIG_FIRMWARE_NAME
+FIRMWARE_NAME := $(subst ",,$(CONFIG_FIRMWARE_NAME))
+else
 FIRMWARE_NAME := main
+endif
 
 # 源文件列表
-SRC_PATH := ./start.s ./$(FIRMWARE_NAME).c \
-		./components/gpio/src/gpio.c
-CFLAGS += -I./components/gpio/include
+SRC_PATH := ./start.s ./main.c \
+		./components/gpio/src/gpio.c \
+		./components/sys_uart/src/sys_uart.c \
+		./components/libc/src/string.c \
+		./components/libc/src/stdio.c \
+		./components/libgcc/src/div.S ./components/libgcc/src/muldi3.S ./components/libgcc/src/mulsi3.c ./components/libgcc/src/lshrdi3.c
+CFLAGS += -I./components/gpio/include \
+		-I./components/sys_uart/include \
+		-I./components/libc/include \
+		-I./components/libgcc/include \
+		-I./configs
 
 # 链接脚本路径
 LDS_PATH := ./sections.lds
