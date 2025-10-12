@@ -6,6 +6,7 @@
 !CONTRIBUTING.md
 !LICENSE
 !README*.md
+!.envrc
 
 !src/
 !src/**
@@ -15,4 +16,11 @@
 
 !docs/
 !docs/**
+
+!tools
+!tools/fixdep
+!tools/fixdep/**
+!tools/kconfig
+!tools/kconfig/**
+
 
