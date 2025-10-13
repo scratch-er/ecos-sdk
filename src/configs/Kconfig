@@ -42,7 +42,8 @@ menu "System Configuration"
         int "PSRAM SCLK Maximum Frequency (MHz)"
         default 133
         range 1 200
-        
+endmenu
+
 menu "Peripheral Drivers"
     config DRIVER_UART
         bool "UART Driver Support"

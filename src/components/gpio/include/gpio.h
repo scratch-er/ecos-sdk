@@ -7,7 +7,7 @@
 #define TINYGPIO_H__
 
 #include "gpio_type.h"
-
+#include "stdio.h"
 /**
  * @brief GPIO配置函数
  * 
