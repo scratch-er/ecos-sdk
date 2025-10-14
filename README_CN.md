@@ -30,4 +30,4 @@ make
 ## 致谢
 
 - 【代码编写】 [maksyuki](https://github.com/maksyuki/maksyuki)
-- 【整理维护】 [XHTimmo](https://github.com/XHTimmo)
+- 【整理维护 & 代码编写】 [XHTimmo](https://github.com/XHTimmo)

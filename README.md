@@ -31,4 +31,4 @@ For detailed development guidelines, please refer to: [Development Guide](docs/d
 ## Acknowledgments
 
 - 【Code Writing】 [maksyuki](https://github.com/maksyuki/maksyuki)
-- 【Maintenance】 [XHTimmo](https://github.com/XHTimmo)
+- 【Maintenance & Code Writing】 [XHTimmo](https://github.com/XHTimmo)
