@@ -42,17 +42,27 @@ endif
 
 # 源文件列表
 SRC_PATH := ./start.s ./main.c \
-		./components/gpio/src/gpio.c \
-		./components/sys_uart/src/sys_uart.c \
 		./components/libc/src/string.c \
 		./components/libc/src/stdio.c \
-		./components/libgcc/src/div.S ./components/libgcc/src/muldi3.S ./components/libgcc/src/mulsi3.c ./components/libgcc/src/lshrdi3.c
-CFLAGS += -I./components/gpio/include \
-		-I./components/sys_uart/include \
+		./components/libgcc/src/div.S \
+		./components/libgcc/src/muldi3.S \
+		./components/libgcc/src/mulsi3.c \
+		./components/libgcc/src/lshrdi3.c \
+		./components/sys_uart/src/sys_uart.c \
+		./components/gpio/src/gpio.c \
+		./components/qspi/src/qspi.c \
+		./components/timer/src/timer.c \
+		./devices/st7735/src/st7735.c
+
+CFLAGS += -I./configs \
 		-I./components/libc/include \
 		-I./components/libgcc/include \
-		-I./configs
-
+		-I./components/sys_uart/include \
+		-I./components/gpio/include \
+		-I./components/qspi/include \
+		-I./components/timer/include \
+		-I./devices/st7735/include \
+		
 # 链接脚本路径
 LDS_PATH := ./sections.lds
 

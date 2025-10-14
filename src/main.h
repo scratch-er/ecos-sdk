@@ -5,6 +5,10 @@
 
 // Component Headers
 #include "gpio.h"
+#include "qspi.h"
+
+// Device Headers
+#include "st7735.h"
 
 // System Configuration
 #include "generated/autoconf.h"
