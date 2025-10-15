@@ -232,8 +232,7 @@ void button_example(void)
 ```c
 #include "gpio.h"
 
-void multi_gpio_example(void)
-{
+void multi_gpio_example(void){
     // 批量配置GPIO0-3为输出模式
     gpio_config_t output_conf = {
         .pin_bit_mask = (1ULL << GPIO_NUM_0) | (1ULL << GPIO_NUM_1) | 
