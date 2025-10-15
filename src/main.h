@@ -6,6 +6,8 @@
 // Component Headers
 #include "gpio.h"
 #include "qspi.h"
+#include "timer.h"
+#include "pwm.h"
 
 // Device Headers
 #include "st7735.h"
