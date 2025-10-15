@@ -35,10 +35,10 @@ void gpio_config(const gpio_config_t* config)
 
 void gpio_set_level(gpio_num_t gpio_num, gpio_level_t level){
     if (level == GPIO_LEVEL_HIGH){
-        REG_GPIO_DATA |= (0x01 << gpio_num);
+        REG_GPIO_DATA |= ((uint32_t)0x01 << gpio_num);
     }
     else{
-        REG_GPIO_DATA &= ~(0x01 << gpio_num);
+        REG_GPIO_DATA &= ~((uint32_t)0x01 << gpio_num);
     }
 }
 
