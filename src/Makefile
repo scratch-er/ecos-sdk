@@ -53,6 +53,7 @@ SRC_PATH := ./start.s ./main.c \
 		./components/qspi/src/qspi.c \
 		./components/timer/src/timer.c \
 		./components/pwm/src/pwm.c \
+		./components/i2c/src/i2c.c \
 		./devices/st7735/src/st7735.c
 
 CFLAGS += -I./configs \
@@ -63,6 +64,7 @@ CFLAGS += -I./configs \
 		-I./components/qspi/include \
 		-I./components/timer/include \
 		-I./components/pwm/include \
+		-I./components/i2c/include \
 		-I./devices/st7735/include \
 		
 # 链接脚本路径

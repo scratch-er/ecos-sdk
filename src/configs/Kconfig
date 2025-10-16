@@ -71,7 +71,7 @@ menu "Peripheral Drivers"
           
     config DRIVER_PWM
         bool "PWM Driver Support"
-        default n
+        default y
         help
           Enable PWM driver for pulse width modulation
           

@@ -8,6 +8,7 @@
 #include "qspi.h"
 #include "timer.h"
 #include "pwm.h"
+#include "i2c.h"
 
 // Device Headers
 #include "st7735.h"
