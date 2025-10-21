@@ -3,13 +3,91 @@
 ## 快速开始
 
 ### 1. 环境配置
-下载并配置 [RISC-V 交叉编译工具链](https://github.com/ecoslab/ecos-embed-sdk/releases/download/riscv-tools/riscv.zip)：
+
+#### 方式一：使用脚本自动配置（推荐）
 ```bash
-# 下载工具链到 tools 目录
-# 添加到环境变量
-export PATH=$PATH:/path/to/ECOS_env/tools/riscv/bin
-# 同时修改该路径的文件权限 需要 +x
-chmod -R +x /path/to/ECOS_env/tools/riscv/
+bash tools/setup_env.sh
+```
+
+#### 方式二：手动配置
+
+##### 步骤1：安装基础依赖包
+```bash
+# Ubuntu/Debian 系统
+sudo apt-get update -y
+sudo apt-get install -y build-essential flex bison libncurses-dev wget unzip git
+```
+
+##### 步骤2：安装 RISC-V 交叉编译工具链
+
+**选项A：下载预编译工具链（推荐）**
+```bash
+# 创建工具目录
+mkdir -p tools
+
+# 下载工具链ZIP包
+wget -O tools/riscv.zip https://github.com/ecoslab/ecos-embed-sdk/releases/download/riscv-tools/riscv.zip
+
+# 解压到tools目录
+unzip -q tools/riscv.zip -d tools/
+
+# 设置执行权限
+chmod -R +x tools/riscv/
+```
+
+**选项B：使用系统包管理器安装**
+```bash
+# 安装RISC-V工具链
+sudo apt-get install -y gcc-riscv64-linux-gnu binutils-riscv64-linux-gnu \
+                        gcc-riscv64-unknown-elf binutils-riscv64-unknown-elf
+
+# 创建符号链接（为了兼容项目中的riscv32前缀）
+mkdir -p tools/riscv/bin
+for tool in gcc g++ ar as ld objcopy objdump ranlib size strip; do
+    ln -sf $(which riscv64-unknown-elf-$tool) tools/riscv/bin/riscv32-unknown-elf-$tool
+done
+```
+
+##### 步骤3：配置环境变量
+```bash
+# 设置项目环境变量
+export ECOS_HOME="$(pwd)"
+export AM_HOME="$(pwd)/utils/abstract-machine"
+export PATH="$(pwd)/tools/riscv/bin:$PATH"
+
+# 将环境变量写入.envrc文件（可选，用于direnv）
+cat > .envrc << EOF
+# ECOS Embedded SDK 环境变量
+export ECOS_HOME="$(pwd)"
+export AM_HOME="$(pwd)/utils/abstract-machine"
+export PATH="$(pwd)/tools/riscv/bin:\$PATH"
+EOF
+```
+
+##### 步骤4：构建辅助工具
+```bash
+# 构建fixdep工具
+make -C tools/fixdep
+
+# 构建kconfig工具
+make -C tools/kconfig NAME=conf
+make -C tools/kconfig NAME=mconf
+```
+
+##### 步骤5：验证安装
+```bash
+# 检查环境变量
+echo "ECOS_HOME: $ECOS_HOME"
+echo "AM_HOME: $AM_HOME"
+echo "PATH包含: $(echo $PATH | grep -o '[^:]*riscv[^:]*')"
+
+# 验证工具链
+riscv32-unknown-elf-gcc --version
+riscv64-unknown-elf-gcc --version
+
+# 测试编译工具
+make -C tools/fixdep clean && make -C tools/fixdep
+make -C tools/kconfig clean && make -C tools/kconfig NAME=conf
 ```
 
 ### 2. 创建配置文件
