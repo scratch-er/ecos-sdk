@@ -12,20 +12,32 @@ export PATH=$PATH:/path/to/ECOS_env/tools/riscv/bin
 chmod -R +x /path/to/ECOS_env/tools/riscv/
 ```
 
-### 2. 编译固件
+### 2. 创建配置文件
+```bash
+cd src
+make menuconfig  // 打开配置界面，默认配置退出即可
+```
+
+### 3. 编译固件
 ```bash
 cd src
 make
 ```
 
-生成文件：
+在`src/build`目录下生成文件：
 - `retrosoc_fw.elf` - 可执行文件
 - `retrosoc_fw.hex` - Verilog仿真文件
 - `retrosoc_fw.bin` - 烧录文件
 
 ## 文档
 
-详细的开发指南请参考：[开发入门指南](docs/development_guide.md)
+详细的开发指南请参考各模块驱动文档：
+- [GPIO 驱动](docs/gpio_api.md)
+- [QSPI 驱动](docs/qspi_api.md)
+- [I2C 驱动](docs/i2c_api.md)
+- [PWM 驱动](docs/pwm_api.md)
+- [timer 驱动](docs/timer_api.md)
+- [ST7735 驱动](docs/st7735_api.md)
 
 ## 致谢
 
