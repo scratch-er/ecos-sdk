@@ -2,10 +2,13 @@
 set -euo pipefail
 
 # ECOS Embedded SDK 环境自动安装脚本
-# - 安装主机依赖 (gcc/g++/make, flex/bison, ncurses)
-# - 安装/配置 RISC-V 交叉工具链
-# - 构建 kconfig 和 fixdep 辅助工具
-# - 写入 .envrc (ECOS_HOME/AM_HOME/PATH)
+# 
+# 功能：
+# - 🔍 检测本地ZIP包，避免重复下载
+# - 📦 安装主机依赖 (gcc/g++/make, flex/bison, ncurses)
+# - 🛠️  安装/配置 RISC-V 交叉工具链
+# - 🔧 构建 kconfig 和 fixdep 辅助工具
+# - 📝 写入 .envrc (ECOS_HOME/AM_HOME/PATH)
 #
 # 使用：
 #   bash tools/setup_env.sh                # 默认下载ZIP工具链
@@ -34,20 +37,33 @@ err() { echo -e "\033[1;31m[error]\033[0m $*"; }
 
 ensure_dir() { mkdir -p "$1"; }
 
+install_base_deps() {
+  local base_pkgs=(build-essential flex bison libncurses-dev wget unzip git)
+  if command -v apt-get >/dev/null 2>&1; then
+    log "安装基础依赖包 ..."
+    if [[ $EUID -ne 0 ]]; then
+      sudo apt-get update -y
+      sudo apt-get install -y "${base_pkgs[@]}"
+    else
+      apt-get update -y
+      apt-get install -y "${base_pkgs[@]}"
+    fi
+  else
+    warn "未检测到apt-get，请手动安装基础依赖：${base_pkgs[*]}"
+  fi
+}
+
 apt_install() {
-  local pkgs=(
-    build-essential flex bison libncurses-dev wget unzip git
+  local riscv_pkgs=(
     gcc-riscv64-linux-gnu binutils-riscv64-linux-gnu
     gcc-riscv64-unknown-elf binutils-riscv64-unknown-elf
   )
   if command -v apt-get >/dev/null 2>&1; then
-    log "安装主机与RISC-V工具链依赖 (apt) ..."
+    log "安装RISC-V工具链依赖 (apt) ..."
     if [[ $EUID -ne 0 ]]; then
-      sudo apt-get update -y
-      sudo apt-get install -y "${pkgs[@]}"
+      sudo apt-get install -y "${riscv_pkgs[@]}"
     else
-      apt-get update -y
-      apt-get install -y "${pkgs[@]}"
+      apt-get install -y "${riscv_pkgs[@]}"
     fi
   else
     err "未检测到apt-get，请使用 --toolchain zip 或在本机手动安装依赖。"
@@ -55,16 +71,72 @@ apt_install() {
   fi
 }
 
+check_zip_exists() {
+  local zip_path="$TOOLS_DIR/riscv.zip"
+  local extracted_dir="$RISCV_DIR"
+  
+  # 检查是否已有解压的工具链目录且包含必要文件
+  if [[ -d "$extracted_dir/bin" ]] && [[ -x "$extracted_dir/bin/riscv32-unknown-elf-gcc" ]]; then
+    log "检测到已安装的RISC-V工具链：$extracted_dir"
+    return 0  # 已存在，无需重新安装
+  fi
+  
+  # 检查是否有本地ZIP文件
+  if [[ -f "$zip_path" ]]; then
+    log "检测到本地ZIP包：$zip_path"
+    local file_size=$(stat -c%s "$zip_path" 2>/dev/null || echo "0")
+    if [[ $file_size -gt 1048576 ]]; then  # 大于1MB认为是有效文件
+      log "使用本地ZIP包进行安装"
+      return 1  # 有本地文件，需要解压
+    else
+      warn "本地ZIP文件过小，可能损坏，将重新下载"
+      rm -f "$zip_path"
+    fi
+  fi
+  
+  return 2  # 需要下载
+}
+
 install_toolchain_zip() {
   ensure_dir "$TOOLS_DIR"
   local url="https://github.com/ecoslab/ecos-embed-sdk/releases/download/riscv-tools/riscv.zip"
   local zip_path="$TOOLS_DIR/riscv.zip"
-  log "下载 RISC-V 工具链 (ZIP)：$url"
-  wget -O "$zip_path" "$url"
-  log "解压到：$RISCV_DIR"
-  rm -rf "$RISCV_DIR"
-  unzip -q "$zip_path" -d "$TOOLS_DIR"
-  chmod -R +x "$RISCV_DIR" || true
+  
+  local zip_status
+  set +e  # 临时禁用 set -e
+  check_zip_exists
+  zip_status=$?
+  set -e  # 重新启用 set -e
+  log "zip_status $zip_status" 
+  case $zip_status in
+    0)
+      log "RISC-V工具链已安装，跳过下载"
+      return 0
+      ;;
+    1)
+      log "使用本地ZIP包解压到：$RISCV_DIR"
+      ;;
+    2)
+      log "下载 RISC-V 工具链 (ZIP)：$url"
+      if ! wget -O "$zip_path" "$url"; then
+        err "下载失败，请检查网络连接或手动下载到：$zip_path"
+        exit 1
+      fi
+      log "下载完成，解压到：$RISCV_DIR"
+      ;;
+  esac
+  
+  # 解压ZIP包
+  if [[ $zip_status -ne 0 ]]; then
+    rm -rf "$RISCV_DIR"
+    if ! unzip -q "$zip_path" -d "$TOOLS_DIR"; then
+      err "解压失败，ZIP文件可能损坏"
+      rm -f "$zip_path"
+      exit 1
+    fi
+    chmod -R +x "$RISCV_DIR" || true
+    log "RISC-V工具链安装完成"
+  fi
 }
 
 link_riscv32_aliases() {
@@ -101,16 +173,24 @@ build_helpers() {
 summary_next() {
   cat <<EOF
 
-依赖安装完成。后续建议：
-- 加载环境变量：
-  source "$ROOT_DIR/.envrc"    # 或安装 direnv 后执行：direnv allow
-- 运行配置菜单：
-  make -C "$ROOT_DIR/src" menuconfig
-- 编译固件：
-  make -C "$ROOT_DIR/src"
-- (可选) 编译 Abstract-Machine 示例：
-  export OBJDUMP="riscv64-unknown-elf-objdump"; export OBJCOPY="riscv64-unknown-elf-objcopy"
-  # 具体目标依赖于项目脚本，可参考 utils/abstract-machine/scripts/riscv32-xxh.mk
+✅ 依赖安装完成。后续建议：
+
+🔧 加载环境变量：
+   source "$ROOT_DIR/.envrc"    # 或安装 direnv 后执行：direnv allow
+
+⚙️  运行配置菜单：
+   make -C "$ROOT_DIR/src" menuconfig
+
+🔨 编译固件：
+   make -C "$ROOT_DIR/src"
+
+📋 验证工具链：
+   riscv32-unknown-elf-gcc --version
+   riscv64-unknown-elf-gcc --version
+
+🚀 (可选) 编译 Abstract-Machine 示例：
+   export OBJDUMP="riscv64-unknown-elf-objdump"; export OBJCOPY="riscv64-unknown-elf-objcopy"
+   # 具体目标依赖于项目脚本，可参考 utils/abstract-machine/scripts/riscv32-xxh.mk
 
 EOF
 }
@@ -118,6 +198,9 @@ EOF
 main() {
   log "项目根目录：$ROOT_DIR"
   ensure_dir "$RISCV_BIN"
+
+  # 首先安装基础依赖（wget, unzip等）
+  install_base_deps
 
   if [[ "$TOOLCHAIN_SOURCE" == "apt" ]]; then
     apt_install
