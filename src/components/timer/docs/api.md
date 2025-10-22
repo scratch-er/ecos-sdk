@@ -23,7 +23,7 @@ Timer驱动提供了以下寄存器的直接访问：
 ### 寄存器说明
 
 - **REG_TIM0_CONFIG**: 定时器配置寄存器，用于控制定时器的启动和停止
-- **REG_TIM0_VALUE**: 定时器当前计数值寄存器，只读
+- **REG_TIM0_VALUE**: 定时器重装载值寄存器，用于重装载模式下设置定时器的计数值
 - **REG_TIM0_DATA**: 定时器目标值寄存器，设置定时器的计数目标
 
 ## API函数
@@ -58,8 +58,6 @@ delay_ms(100);
 // 延时1秒
 delay_ms(1000);
 
-// 延时500微秒（0.5毫秒）
-delay_ms(1);  // 最小延时单位为1毫秒
 ```
 
 ## 完整使用示例
@@ -270,7 +268,7 @@ void timeout_example(void)
 
 ```c
 // 在配置文件中定义CPU频率（MHz）
-#define CONFIG_CPU_FREQ_MHZ  50  // 示例：50MHz系统时钟
+#define CONFIG_CPU_FREQ_MHZ  72  // 示例：72MHz系统时钟
 ```
 
 该配置直接影响延时计算的准确性，必须与实际硬件时钟频率保持一致。
