@@ -185,9 +185,16 @@ void st7735_fill(st7735_device_t* dev, uint16_t xsta, uint16_t ysta, uint16_t xe
     st7735_addr_set(dev, xsta, ysta, xend - 1, yend - 1);
     for (uint16_t i = ysta; i < yend; i++){
         for (uint16_t j = xsta; j < xend; j += 64){
-            printf("st7735_fill: %d, %d\n", j, i);
             st7735_wr_data32x32(dev, color, color, color, color, color, color, color, color, color, color, color, color, color, color, color, color, 
               color, color, color, color, color, color, color, color, color, color, color, color, color, color, color, color);
         }
     }
+}
+
+void st7735_fill_img(st7735_device_t* dev, uint16_t x, uint16_t y, uint16_t w, uint16_t h, const uint32_t *data) {
+  st7735_addr_set(dev, x, y, x + w - 1, y + h - 1);
+  for (uint16_t i = 0; i < 8192; i+=32) {
+    st7735_wr_data32x32(dev, data[i],data[i+1],data[i+2],data[i+3],data[i+4],data[i+5],data[i+6],data[i+7],data[i+8],data[i+9],data[i+10],data[i+11],data[i+12],data[i+13],data[i+14],data[i+15],
+        data[i+16],data[i+17],data[i+18],data[i+19],data[i+20],data[i+21],data[i+22],data[i+23],data[i+24],data[i+25],data[i+26],data[i+27],data[i+28],data[i+29],data[i+30],data[i+31]);
+  }
 }

@@ -21,5 +21,5 @@ void st7735_wr_data32x32(st7735_device_t* dev, uint32_t data1, uint32_t data2, u
 
 
 void st7735_fill(st7735_device_t* dev, uint16_t xsta, uint16_t ysta, uint16_t xend, uint16_t yend, uint32_t color);
-
+void st7735_fill_img(st7735_device_t* dev, uint16_t x, uint16_t y, uint16_t w, uint16_t h, const uint32_t *data);
 #endif
