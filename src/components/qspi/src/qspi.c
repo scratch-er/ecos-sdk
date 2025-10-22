@@ -126,8 +126,6 @@ void qspi_write_32x32(uint32_t data1, uint32_t data2, uint32_t data3, uint32_t d
     REG_CUST_QSPI_TXFIFO = data31;
     REG_CUST_QSPI_TXFIFO = data32;
     REG_CUST_QSPI_STATUS = 258;
-    printf("qspi_status: %x\n", REG_CUST_QSPI_STATUS);
     while ((REG_CUST_QSPI_STATUS & 0xFFFFFFFF) != 1)
         ;
-    printf("qspi_status: %x\n", REG_CUST_QSPI_STATUS);
 }
