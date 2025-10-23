@@ -17,7 +17,7 @@ static uint32_t i2c_busy(){
     return ((REG_CUST_I2C_SR & I2C_STATUS_BUSY) == I2C_STATUS_BUSY);
 }
 static void i2c_start_write(uint8_t slave_addr){
-    REG_CUST_I2C_TXR = slave_addr;
+    REG_CUST_I2C_TXR = slave_addr << 1;
     REG_CUST_I2C_CMD = I2C_START_WRITE;
     if(!i2c_get_ack()){
         printf("I2C: start write no ack\n");
@@ -25,11 +25,10 @@ static void i2c_start_write(uint8_t slave_addr){
 }
 
 static void i2c_start_read(uint8_t slave_addr){
-    REG_CUST_I2C_TXR = slave_addr;
-    REG_CUST_I2C_CMD = I2C_START_READ;
-    if(!i2c_get_ack()){
-        printf("I2C: start read no ack\n");
-    }
+    do{
+        REG_CUST_I2C_TXR = slave_addr << 1 | 0x1;
+        REG_CUST_I2C_CMD = I2C_START_WRITE;
+    }while(!i2c_get_ack());
 }
 
 static void i2c_stop(){
@@ -77,7 +76,7 @@ void i2c_read_nbyte(uint8_t slave_addr, uint16_t reg_addr, i2c_reg_addr_len_t re
     }
     i2c_stop();
 
-    i2c_start_read(slave_addr + 1);
+    i2c_start_read(slave_addr);
     for(uint32_t i = 0; i < len; i++){
         data[i] = (uint8_t)i2c_read_byte(i == len - 1 ? I2C_STOP_READ : I2C_READ);
     }
