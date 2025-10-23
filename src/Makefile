@@ -54,8 +54,10 @@ SRC_PATH := ./start.s ./main.c \
 		./components/timer/src/timer.c \
 		./components/pwm/src/pwm.c \
 		./components/i2c/src/i2c.c \
+		./components/hp_uart/src/hp_uart.c \
 		./devices/st7735/src/st7735.c \
 		./devices/gy_sgp30/src/sgp30.c \
+
 
 CFLAGS += -I./configs \
 		-I./components/libc/include \
@@ -66,6 +68,7 @@ CFLAGS += -I./configs \
 		-I./components/timer/include \
 		-I./components/pwm/include \
 		-I./components/i2c/include \
+		-I./components/hp_uart/include \
 		-I./devices/st7735/include \
 		-I./devices/gy_sgp30/include \
 		

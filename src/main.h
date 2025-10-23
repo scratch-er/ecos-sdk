@@ -9,6 +9,7 @@
 #include "timer.h"
 #include "pwm.h"
 #include "i2c.h"
+#include "hp_uart.h"
 
 // Device Headers
 #include "st7735.h"
