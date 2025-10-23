@@ -12,6 +12,7 @@
 
 // Device Headers
 #include "st7735.h"
+#include "sgp30.h"
 
 // System Configuration
 #include "generated/autoconf.h"
