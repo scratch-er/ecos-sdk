@@ -33,8 +33,8 @@ typedef enum {
 typedef enum {
     I2C_START = ((uint32_t)0x80),
     I2C_STOP = ((uint32_t)0x40),
-    I2C_READ = ((uint32_t)0x10),
-    I2C_WRITE = ((uint32_t)0x20),
+    I2C_READ = ((uint32_t)0x20),
+    I2C_WRITE = ((uint32_t)0x10),
     I2C_START_READ = ((uint32_t)0xA0),
     I2C_START_WRITE = ((uint32_t)0x90),
     I2C_STOP_READ = ((uint32_t)0x60),
