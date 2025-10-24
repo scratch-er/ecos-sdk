@@ -7,7 +7,6 @@ BUILD_DIR := build
 
 # 包含配置文件
 -include configs/.config
-include scripts/config.mk
 
 # 编译器标志配置
 # -mabi=ilp32: 使用ILP32 ABI
@@ -100,5 +99,7 @@ clean_all:
 	rm -rf $(ECOS_HOME)/tools/fixdep/build
 	rm -rf $(ECOS_HOME)/tools/kconfig/build
 
+
+-include scripts/config.mk
 # 声明伪目标
 .PHONY: $(FIRMWARE_NAME).elf clean
