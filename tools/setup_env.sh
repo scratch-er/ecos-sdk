@@ -8,7 +8,7 @@ set -euo pipefail
 # - 📦 安装主机依赖 (gcc/g++/make, flex/bison, ncurses)
 # - 🛠️  安装/配置 RISC-V 交叉工具链
 # - 🔧 构建 kconfig 和 fixdep 辅助工具
-# - 📝 写入 .envrc (ECOS_HOME/AM_HOME/PATH)
+# - 📝 写入 .envrc (PATH)
 #
 # 使用：
 #   bash tools/setup_env.sh                # 默认下载ZIP工具链
@@ -20,7 +20,6 @@ ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")"/.. && pwd)"
 TOOLS_DIR="$ROOT_DIR/tools"
 RISCV_DIR="$TOOLS_DIR/riscv"
 RISCV_BIN="$RISCV_DIR/bin"
-AM_DIR="$ROOT_DIR/utils/abstract-machine"
 
 TOOLCHAIN_SOURCE="zip"  # 默认下载项目提供的riscv.zip
 if [[ ${1:-} == "--toolchain" ]]; then
@@ -154,13 +153,21 @@ link_riscv32_aliases() {
 
 write_envrc() {
   log "写入 .envrc 环境变量"
-  cat >"$ROOT_DIR/.envrc" <<EOF
+  
+  # 根据工具链类型决定是否设置 PATH
+  if [[ "$TOOLCHAIN_SOURCE" == "system" ]]; then
+    # 使用系统工具链，不修改 PATH，也不需要设置 ECOS_HOME（Makefile 会动态获取）
+    cat >"$ROOT_DIR/.envrc" <<EOF
 # 自动生成：ECOS Embedded SDK 环境
-export ECOS_HOME="$ROOT_DIR"
-export AM_HOME="$AM_DIR"
+EOF
+  else
+    # 使用项目工具链，设置 PATH，ECOS_HOME 仍在 Makefile 中动态获取
+    cat >"$ROOT_DIR/.envrc" <<EOF
+# 自动生成：ECOS Embedded SDK 环境
 # 优先使用项目 tools/riscv/bin (ZIP或apt别名)
 export PATH="$RISCV_BIN:\$PATH"
 EOF
+  fi
 }
 
 build_helpers() {
@@ -195,6 +202,47 @@ summary_next() {
 EOF
 }
 
+ask_user_toolchain_choice() {
+  # 如果是非交互模式或已指定工具链源，跳过询问
+  if [[ "$TOOLCHAIN_SOURCE" == "apt" ]] || [[ ! -t 0 ]]; then
+    return 0
+  fi
+  
+  echo
+  log "RISC-V 工具链安装选项："
+  echo "  1) 使用 SDK 预编译工具链 (riscv32-unknown-elf-*) [推荐]"
+  echo "  2) 使用系统工具链 (需要手动配置 Makefile)"
+  echo
+  
+  while true; do
+    read -p "请选择 [1/2] (默认: 1): " choice
+    case "${choice:-1}" in
+      1)
+        log "将安装 SDK 预编译工具链"
+        return 0
+        ;;
+      2)
+        echo
+        warn "您选择了使用系统工具链。"
+        warn "请手动修改 src/Makefile 中的 CROSS 变量："
+        warn "  当前: CROSS=riscv32-unknown-elf-"
+        warn "  建议: CROSS=riscv64-unknown-elf-  (或您系统中的工具链前缀)"
+        echo
+        log "修改完成后，您可以："
+        log "  1) 使用 apt 安装系统工具链: bash tools/setup_env.sh --toolchain apt"
+        log "  2) 或者直接使用系统已安装的工具链进行编译"
+        echo
+        log "脚本将继续配置环境变量和构建辅助工具..."
+        TOOLCHAIN_SOURCE="system"  # 标记为使用系统工具链
+        return 0
+        ;;
+      *)
+        echo "请输入 1 或 2"
+        ;;
+    esac
+  done
+}
+
 main() {
   log "项目根目录：$ROOT_DIR"
   ensure_dir "$RISCV_BIN"
@@ -205,9 +253,15 @@ main() {
   if [[ "$TOOLCHAIN_SOURCE" == "apt" ]]; then
     apt_install
     link_riscv32_aliases
+  elif [[ "$TOOLCHAIN_SOURCE" == "system" ]]; then
+    log "跳过工具链安装，使用系统工具链"
   else
-    # 默认使用项目提供的ZIP工具链，以匹配 riscv32-unknown-elf-* 前缀
-    install_toolchain_zip
+    # 询问用户是否使用 SDK 预编译工具链
+    ask_user_toolchain_choice
+    # 如果用户选择了 SDK 工具链，则安装
+    if [[ "$TOOLCHAIN_SOURCE" != "system" ]]; then
+      install_toolchain_zip
+    fi
   fi
 
   write_envrc

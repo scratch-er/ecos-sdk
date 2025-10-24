@@ -6,6 +6,8 @@ CC = gcc
 CFLAGS += -DYYDEBUG
 INC_PATH += .
 DISTRO = $(shell cat /etc/os-release | grep PRETTY_NAME | sed 's/PRETTY_NAME=//')
+# 动态获取项目根目录路径
+ECOS_HOME := $(shell cd $(dir $(lastword $(MAKEFILE_LIST)))/../.. && pwd)
 
 ifeq ($(DISTRO),"Gentoo Linux")
 LIBS += -ltinfo
