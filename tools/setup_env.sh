@@ -178,18 +178,26 @@ build_helpers() {
 }
 
 summary_next() {
+  if [[ "$TOOLCHAIN_SOURCE" == "system" ]]; then
+  echo
+    warn "您选择了使用系统工具链。"
+    warn "请手动修改 src/Makefile 中的 CROSS 变量："
+    warn "  当前: CROSS=riscv32-unknown-elf-"
+    warn "  建议: CROSS=riscv64-unknown-elf-  (或您系统中的工具链前缀)"
+  fi
+
   cat <<EOF
 
 依赖安装完成。后续建议：
-1. 加载环境变量：
+1. 加载环境变量（若已添加，请忽略）：
    source "$ROOT_DIR/.envrc"    # 或安装 direnv 后执行：direnv allow
-2. 运行配置菜单：
-   make -C "$ROOT_DIR/src" menuconfig
-3. 编译固件：
-   make -C "$ROOT_DIR/src"
-4. 验证工具链（根据实际情况进行）：
+2. 验证工具链（根据实际情况进行）：
    riscv32-unknown-elf-gcc --version
    riscv64-unknown-elf-gcc --version
+3. 运行配置菜单：
+   make -C "$ROOT_DIR/src" menuconfig
+4. 编译固件：
+   make -C "$ROOT_DIR/src"
 
 EOF
 }
@@ -217,8 +225,6 @@ ask_user_toolchain_choice() {
         echo
         warn "您选择了使用系统工具链。"
         warn "请手动修改 src/Makefile 中的 CROSS 变量："
-        warn "  当前: CROSS=riscv32-unknown-elf-"
-        warn "  建议: CROSS=riscv64-unknown-elf-  (或您系统中的工具链前缀)"
         echo
         log "修改完成后，您可以："
         log "  1) 使用 apt 安装系统工具链: bash tools/setup_env.sh --toolchain apt"
