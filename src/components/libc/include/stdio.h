@@ -8,22 +8,13 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-/**
- * @brief Formatted output to stdout
- * @param fmt Format string
- * @param ... Variable arguments
- * @return Number of characters written
- */
-int printf(const char *fmt, ...);
-
-/**
- * @brief Formatted output with va_list
- * @param fmt Format string
- * @param args Variable argument list
- * @return Number of characters written
- */
-int vprintf(const char *fmt, va_list args);
+int    putchar(int c);
+int    puts (const char *s);
+int    printf    (const char *format, ...);
+int    sprintf   (char *str, const char *format, ...);
+int    snprintf  (char *str, size_t size, const char *format, ...);
+int    vsprintf  (char *str, const char *format, va_list ap);
+int    vsnprintf (char *str, size_t size, const char *format, va_list ap);
 
 #ifdef __cplusplus
 }
