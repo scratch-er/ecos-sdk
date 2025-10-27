@@ -1,6 +1,7 @@
 .section .text
+.global _start
 
-start:
+_start:
 
 # zero-initialize register file
 addi x1, zero, 0
