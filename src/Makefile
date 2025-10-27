@@ -106,6 +106,8 @@ $(BUILD_DIR)/example/%.elf: $(OBJ_DIR)/example/%/main.o $(OBJ_DIR)/start.o $(STA
 	mkdir -p $(BUILD_DIR)/example
 	$(LD) $(LDFLAGS) $(OBJ_DIR)/start.o $< $(STATIC_LIB) -o $@
 
+-include $(shell find example -iname '*.mk')
+
 example: $(EXMAPLE_ELFS) $(EXMAPLE_BINS) $(EXMAPLE_HEXS) $(EXMAPLE_TXTS)
 
 # 清理构建产物
