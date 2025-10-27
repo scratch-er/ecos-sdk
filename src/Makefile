@@ -19,7 +19,7 @@ BUILD_DIR := build
 # -ffreestanding: 独立环境编译
 # -nostdlib: 不链接标准库
 CFLAGS := -mabi=ilp32 -march=rv32im -ffreestanding -nostdlib
-LDFLAGS := -Bstatic -melf32lriscv_ilp32 -T sections.lds
+LDFLAGS := -Bstatic -T sections.lds
 
 # 根据配置文件添加编译优化选项
 ifdef CONFIG_BUILD_OPT_FLAGS
@@ -53,8 +53,7 @@ OBJ_DIR=$(BUILD_DIR)/obj
 # 静态库源文件列表
 LIB_SRCS += $(shell find components -iname '*.c')
 LIB_SRCS += $(shell find devices -iname '*.c')
-LIB_OBJS += $(OBJ_DIR)/start.o
-LIB_OBJS += $(patsubst %.c,$(OBJ_DIR)/%.o,$(LIB_SRCS))
+LIB_OBJS := $(patsubst %.c,$(OBJ_DIR)/%.o,$(LIB_SRCS))
 
 # 主要构建目标：生成固件的所有格式文件
 all: $(BUILD_DIR)/$(FIRMWARE_NAME).bin $(BUILD_DIR)/$(FIRMWARE_NAME).hex $(BUILD_DIR)/$(FIRMWARE_NAME).txt
@@ -92,8 +91,8 @@ $(STATIC_LIB): $(LIB_OBJS)
 LDS_PATH := ./sections.lds
 
 # 使用main.c构建固件
-$(BUILD_DIR)/$(FIRMWARE_NAME).elf: $(OBJ_DIR)/main.o $(STATIC_LIB) $(LDS_PATH)
-	$(LD) $(LDFLAGS) $(OBJ_DIR)/main.o $(STATIC_LIB) -o $@
+$(BUILD_DIR)/$(FIRMWARE_NAME).elf: $(OBJ_DIR)/main.o $(OBJ_DIR)/start.o $(STATIC_LIB) $(LDS_PATH)
+	$(LD) $(LDFLAGS) $(OBJ_DIR)/start.o $(OBJ_DIR)/main.o $(STATIC_LIB) -o $@
 
 # 构建所有示例
 EXAMPLE_SRCS := $(wildcard example/*/main.c)
@@ -103,9 +102,9 @@ EXMAPLE_BINS := $(patsubst example/%/main.c,$(BUILD_DIR)/example/%.bin,$(EXAMPLE
 EXMAPLE_HEXS := $(patsubst example/%/main.c,$(BUILD_DIR)/example/%.hex,$(EXAMPLE_SRCS))
 EXMAPLE_TXTS := $(patsubst example/%/main.c,$(BUILD_DIR)/example/%.txt,$(EXAMPLE_SRCS))
 
-$(BUILD_DIR)/example/%.elf: $(OBJ_DIR)/example/%/main.o $(STATIC_LIB) $(LDS_PATH)
+$(BUILD_DIR)/example/%.elf: $(OBJ_DIR)/example/%/main.o $(OBJ_DIR)/start.o $(STATIC_LIB) $(LDS_PATH)
 	mkdir -p $(BUILD_DIR)/example
-	$(LD) $(LDFLAGS) $< $(STATIC_LIB) -o $@
+	$(LD) $(LDFLAGS) $(OBJ_DIR)/start.o $< $(STATIC_LIB) -o $@
 
 example: $(EXMAPLE_ELFS) $(EXMAPLE_BINS) $(EXMAPLE_HEXS) $(EXMAPLE_TXTS)
 
