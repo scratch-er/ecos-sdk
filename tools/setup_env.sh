@@ -4,11 +4,11 @@ set -euo pipefail
 # ECOS Embedded SDK 环境自动安装脚本
 # 
 # 功能：
-# - 🔍 检测本地ZIP包，避免重复下载
-# - 📦 安装主机依赖 (gcc/g++/make, flex/bison, ncurses)
-# - 🛠️  安装/配置 RISC-V 交叉工具链
-# - 🔧 构建 kconfig 和 fixdep 辅助工具
-# - 📝 写入 .envrc (PATH)
+# - 检测本地ZIP包，避免重复下载
+# - 安装主机依赖 (gcc/g++/make, flex/bison, ncurses)
+# - 安装/配置 RISC-V 交叉工具链
+# - 构建 kconfig 和 fixdep 辅助工具
+# - 写入 .envrc (PATH)
 #
 # 使用：
 #   bash tools/setup_env.sh                # 默认下载ZIP工具链
@@ -180,24 +180,16 @@ build_helpers() {
 summary_next() {
   cat <<EOF
 
-✅ 依赖安装完成。后续建议：
-
-🔧 加载环境变量：
+依赖安装完成。后续建议：
+1. 加载环境变量：
    source "$ROOT_DIR/.envrc"    # 或安装 direnv 后执行：direnv allow
-
-⚙️  运行配置菜单：
+2. 运行配置菜单：
    make -C "$ROOT_DIR/src" menuconfig
-
-🔨 编译固件：
+3. 编译固件：
    make -C "$ROOT_DIR/src"
-
-📋 验证工具链：
+4. 验证工具链（根据实际情况进行）：
    riscv32-unknown-elf-gcc --version
    riscv64-unknown-elf-gcc --version
-
-🚀 (可选) 编译 Abstract-Machine 示例：
-   export OBJDUMP="riscv64-unknown-elf-objdump"; export OBJCOPY="riscv64-unknown-elf-objcopy"
-   # 具体目标依赖于项目脚本，可参考 utils/abstract-machine/scripts/riscv32-xxh.mk
 
 EOF
 }
