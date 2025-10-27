@@ -2,7 +2,7 @@
 #include "generated/autoconf.h"
 
 void sys_uart_init(void){
-    REG_UART_CLKDIV =  (uint32_t)(72 * 1000000 / 115200);
+    REG_UART_CLKDIV =  (uint32_t)(CONFIG_CPU_FREQ_MHZ * 1000000 / 115200);
 }
 
 void sys_putchar(char c){
