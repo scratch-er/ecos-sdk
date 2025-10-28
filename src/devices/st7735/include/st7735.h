@@ -17,7 +17,7 @@ void st7735_wr_data32x32(st7735_device_t* dev, uint32_t data1, uint32_t data2, u
      uint32_t data17, uint32_t data18, uint32_t data19, uint32_t data20, uint32_t data21, uint32_t data22, uint32_t data23, uint32_t data24,
      uint32_t data25, uint32_t data26, uint32_t data27, uint32_t data28, uint32_t data29, uint32_t data30, uint32_t data31, uint32_t data32);
 
-
+void st7735_addr_set(st7735_device_t* dev, uint16_t xsta, uint16_t ysta, uint16_t xend, uint16_t yend);
 
 
 void st7735_fill(st7735_device_t* dev, uint16_t xsta, uint16_t ysta, uint16_t xend, uint16_t yend, uint32_t color);

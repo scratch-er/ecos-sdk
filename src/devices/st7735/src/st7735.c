@@ -169,8 +169,7 @@ void st7735_init(st7735_device_t* dev){
     printf("TFT init done\n");
 }
 
-static void st7735_addr_set(st7735_device_t* dev, uint16_t xsta, uint16_t ysta, uint16_t xend, uint16_t yend)
-{
+void st7735_addr_set(st7735_device_t* dev, uint16_t xsta, uint16_t ysta, uint16_t xend, uint16_t yend){
     st7735_wr_cmd(dev, 0x2A); // 列地址设置
     st7735_wr_data16(dev, xsta + dev->horizontal_offset);
     st7735_wr_data16(dev, xend + dev->horizontal_offset);
@@ -180,8 +179,7 @@ static void st7735_addr_set(st7735_device_t* dev, uint16_t xsta, uint16_t ysta, 
     st7735_wr_cmd(dev, 0x2C); // 内存写入
 }
 
-void st7735_fill(st7735_device_t* dev, uint16_t xsta, uint16_t ysta, uint16_t xend, uint16_t yend, uint32_t color)
-{
+void st7735_fill(st7735_device_t* dev, uint16_t xsta, uint16_t ysta, uint16_t xend, uint16_t yend, uint32_t color){
     st7735_addr_set(dev, xsta, ysta, xend - 1, yend - 1);
     for (uint16_t i = ysta; i < yend; i++){
         for (uint16_t j = xsta; j < xend; j += 64){
