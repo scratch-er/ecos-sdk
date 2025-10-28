@@ -52,15 +52,11 @@ done
 ##### Step 3: Configure Environment Variables
 ```bash
 # Set project environment variables
-export ECOS_HOME="$(pwd)"
-export AM_HOME="$(pwd)/utils/abstract-machine"
 export PATH="$(pwd)/tools/riscv/bin:$PATH"
 
 # Write environment variables to .envrc file (optional, for direnv)
 cat > .envrc << EOF
 # ECOS Embedded SDK Environment Variables
-export ECOS_HOME="$(pwd)"
-export AM_HOME="$(pwd)/utils/abstract-machine"
 export PATH="$(pwd)/tools/riscv/bin:\$PATH"
 EOF
 ```
@@ -78,8 +74,6 @@ make -C tools/kconfig NAME=mconf
 ##### Step 5: Verify Installation
 ```bash
 # Check environment variables
-echo "ECOS_HOME: $ECOS_HOME"
-echo "AM_HOME: $AM_HOME"
 echo "PATH contains: $(echo $PATH | grep -o '[^:]*riscv[^:]*')"
 
 # Verify toolchain

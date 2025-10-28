@@ -51,15 +51,11 @@ done
 ##### 步骤3：配置环境变量
 ```bash
 # 设置项目环境变量
-export ECOS_HOME="$(pwd)"
-export AM_HOME="$(pwd)/utils/abstract-machine"
 export PATH="$(pwd)/tools/riscv/bin:$PATH"
 
 # 将环境变量写入.envrc文件（可选，用于direnv）
 cat > .envrc << EOF
 # ECOS Embedded SDK 环境变量
-export ECOS_HOME="$(pwd)"
-export AM_HOME="$(pwd)/utils/abstract-machine"
 export PATH="$(pwd)/tools/riscv/bin:\$PATH"
 EOF
 ```
@@ -77,8 +73,6 @@ make -C tools/kconfig NAME=mconf
 ##### 步骤5：验证安装
 ```bash
 # 检查环境变量
-echo "ECOS_HOME: $ECOS_HOME"
-echo "AM_HOME: $AM_HOME"
 echo "PATH包含: $(echo $PATH | grep -o '[^:]*riscv[^:]*')"
 
 # 验证工具链
