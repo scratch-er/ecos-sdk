@@ -1,5 +1,4 @@
 #include "main.h"
-#include "i2c_scanner.h"
 
 void main(void){
     
@@ -11,21 +10,6 @@ void main(void){
         .pscr = 99,
     };
     i2c_init(&i2c_config);
-
-    // 执行I2C设备扫描
-    printf("\n=== I2C Device Scanner ===\n");
-    i2c_print_scan_result(0x08, 0x77);
-
-    // 演示单个设备检测
-    printf("=== Individual Device Tests ===\n");
-    uint8_t test_addresses[] = {0x3C, 0x48, 0x58, 0x68, 0x76};
-    uint8_t num_test_addr = sizeof(test_addresses) / sizeof(test_addresses[0]);
-    
-    for (uint8_t i = 0; i < num_test_addr; i++) {
-        uint8_t addr = test_addresses[i];
-        bool found = i2c_probe_device(addr);
-        printf("Device at 0x%X: %s\n", addr, found ? "FOUND" : "NOT FOUND");
-    }
 
     // SGP30传感器测试
     printf("\n=== SGP30 Air Quality Sensor Test ===\n");
