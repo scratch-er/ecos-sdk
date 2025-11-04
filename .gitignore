@@ -35,6 +35,8 @@
 !bin/
 !bin/**
 
+!install.sh
+
 !tools
 !tools/fixdep
 !tools/fixdep/**
