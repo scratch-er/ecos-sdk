@@ -1,5 +1,6 @@
 #include "i2c.h"
 #include "stdio.h"
+#include "board.h"
 
 void i2c_init(i2c_config_t* config){
     REG_CUST_I2C_CTRL = (uint32_t)0;

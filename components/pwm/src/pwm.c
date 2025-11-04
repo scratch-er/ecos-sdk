@@ -1,4 +1,5 @@
 #include "pwm.h"
+#include "board.h"
 
 void pwm_init(pwm_config_t* config){
     REG_CUST_PWM_PSCR = config->pscr;

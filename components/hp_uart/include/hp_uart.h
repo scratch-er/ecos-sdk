@@ -1,7 +1,7 @@
 #ifndef __HP_UART_H__
 #define __HP_UART_H__
 
-#include "hp_uart_type.h"
+#include <stdint.h>
 
 void hp_uart_init(uint32_t baudrate);
 void hp_uart_send(char c);

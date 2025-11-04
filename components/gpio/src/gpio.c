@@ -1,6 +1,5 @@
 #include <stddef.h>
 #include "gpio.h"
-#include "generated/autoconf.h"
 #include "board.h"
 
 static void gpio_set_output(uint32_t io_num){

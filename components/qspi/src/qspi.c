@@ -1,5 +1,6 @@
 #include "qspi.h"
 #include "stdio.h"
+#include "board.h"
 
 void qspi_init(qspi_config_t *config){
     REG_CUST_QSPI_STATUS = (uint32_t)0b10000;

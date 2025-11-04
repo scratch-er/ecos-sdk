@@ -3,14 +3,6 @@
 
 #include <stdint.h>
 
-/* ========== I2C 接口寄存器 ========== */
-#define REG_CUST_I2C_CTRL     (*(volatile uint32_t*)0x03006000)  // I2C控制寄存器
-#define REG_CUST_I2C_PSCR     (*(volatile uint32_t*)0x03006004)  // I2C预分频寄存器
-#define REG_CUST_I2C_TXR      (*(volatile uint32_t*)0x03006008)  // I2C发送寄存器
-#define REG_CUST_I2C_RXR      (*(volatile uint32_t*)0x0300600c)  // I2C接收寄存器
-#define REG_CUST_I2C_CMD      (*(volatile uint32_t*)0x03006010)  // I2C命令寄存器
-#define REG_CUST_I2C_SR       (*(volatile uint32_t*)0x03006014)  // I2C状态寄存器
-
 // I2C状态寄存器位定义
 #define I2C_STATUS_RXACK     ((uint32_t)0x80) // (1 << 7)
 #define I2C_STATUS_BUSY      ((uint32_t)0x40) // (1 << 6)

@@ -1,5 +1,6 @@
 #include "sys_uart.h"
 #include "generated/autoconf.h"
+#include "board.h"
 
 void sys_uart_init(void){
     REG_UART_CLKDIV =  (uint32_t)(CONFIG_CPU_FREQ_MHZ * 1000000 / 115200);

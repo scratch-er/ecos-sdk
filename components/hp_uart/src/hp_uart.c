@@ -1,6 +1,7 @@
 #include "hp_uart.h"
 #include "generated/autoconf.h"
 #include "stdio.h"
+#include "board.h"
 
 void hp_uart_init(uint32_t baudrate)
 {

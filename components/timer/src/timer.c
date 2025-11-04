@@ -1,6 +1,7 @@
 #include "timer.h"
 #include "stdio.h"
 #include "generated/autoconf.h"
+#include "board.h"
 
 void delay_us(uint32_t val){
     REG_TIM0_CONFIG = (uint32_t)0x0100;
