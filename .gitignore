@@ -32,6 +32,8 @@
 !example 
 !example/**
 
+!bin/
+!bin/**
 
 !tools
 !tools/fixdep

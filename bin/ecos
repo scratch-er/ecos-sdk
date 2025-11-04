@@ -1,0 +1,174 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# ECOS 命令行工具
+# 用于管理ECOS嵌入式SDK的各种操作
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+SDK_ROOT="$(dirname "$SCRIPT_DIR")"
+
+# 颜色输出
+log() { echo -e "\033[1;32m[ECOS]\033[0m $*"; }
+warn() { echo -e "\033[1;33m[WARN]\033[0m $*"; }
+err() { echo -e "\033[1;31m[ERROR]\033[0m $*"; }
+
+# 显示帮助信息
+show_help() {
+    echo "ECOS 嵌入式SDK命令行工具"
+    echo ""
+    echo "用法: ecos <command> [options]"
+    echo ""
+    echo "可用命令:"
+    echo "  set_board <board_name>       设置开发板配置"
+    echo "  init_project <project_name>  初始化项目"
+    echo "  help                         显示帮助信息"
+    echo ""
+    echo "开发板列表:"
+    echo "  c1                           StarrySky C1开发板"
+    echo "  l3                           StarrySky L3开发板"
+    echo ""
+    echo "示例:"
+    echo "  ecos set_board c1            设置为StarrySky C1开发板"
+    echo ""
+}
+
+# 检查是否在项目目录中
+check_project_dir() {
+    if [[ ! -f "Makefile" ]] && [[ ! -f ".ecos-project" ]]; then
+        err "当前目录不是ECOS项目目录"
+        err "请在包含Makefile或.ecos-project文件的项目目录中运行此命令"
+        exit 1
+    fi
+}
+
+# 设置开发板配置
+set_board() {
+    local board_name="$1"
+    
+    check_project_dir
+    
+    case "$board_name" in
+        "c1")
+            local board_file="starrysky_c1.h"
+            local source_path="$SDK_ROOT/board/$board_file"
+            local target_path="./board.h"
+            
+            if [[ ! -f "$source_path" ]]; then
+                err "开发板配置文件不存在: $source_path"
+                exit 1
+            fi
+            
+            # 拷贝开发板配置文件
+            cp "$source_path" "$target_path"
+            log "已设置开发板配置: starrysky_c1"
+            log "配置文件: $target_path"
+            
+            # 如果存在.ecos-project文件，更新开发板信息
+            if [[ -f ".ecos-project" ]]; then
+                if grep -q "BOARD=" ".ecos-project"; then
+                    sed -i "s/BOARD=.*/BOARD=$board_name/" ".ecos-project"
+                else
+                    echo "BOARD=$board_name" >> ".ecos-project"
+                fi
+                log "已更新项目配置文件"
+            fi
+            ;;
+        "l3")
+            local board_file="starrysky_l3.h"
+            local source_path="$SDK_ROOT/board/$board_file"
+            local target_path="./board.h"
+            
+            if [[ ! -f "$source_path" ]]; then
+                err "开发板配置文件不存在: $source_path"
+                exit 1
+            fi
+            
+            # 拷贝开发板配置文件
+            cp "$source_path" "$target_path"
+            log "已设置开发板配置: starrysky_l3"
+            log "配置文件: $target_path"
+            
+            # 如果存在.ecos-project文件，更新开发板信息
+            if [[ -f ".ecos-project" ]]; then
+                if grep -q "BOARD=" ".ecos-project"; then
+                    sed -i "s/BOARD=.*/BOARD=$board_name/" ".ecos-project"
+                else
+                    echo "BOARD=$board_name" >> ".ecos-project"
+                fi
+                log "已更新项目配置文件"
+            fi
+            ;;
+        *)
+            err "不支持的开发板: $board_name"
+            echo ""
+            echo "支持的开发板:"
+            echo "  c1    StarrySky C1开发板"
+            echo "  l3    StarrySky L3开发板"
+            exit 1
+            ;;
+    esac
+}
+
+init_project() {
+    local project_name="$1"
+    
+    # 检查项目目录是否存在
+    if [[ -d "$project_name" ]]; then
+        err "项目目录已存在: $project_name"
+        exit 1
+    fi
+    
+    # 从模板目录复制项目模板
+    cp -r "$SDK_ROOT/templates/$project_name" "$project_name"
+    cd "$project_name"
+    
+    # 初始化项目配置文件
+    echo "BOARD=c1" > ".ecos-project"
+    log "已初始化项目: $project_name"
+    log "配置文件: .ecos-project"
+}
+
+# 主函数
+main() {
+    if [[ $# -eq 0 ]]; then
+        show_help
+        exit 0
+    fi
+    
+    local command="$1"
+    shift
+    
+    case "$command" in
+        "set_board")
+            if [[ $# -eq 0 ]]; then
+                err "缺少开发板名称参数"
+                echo ""
+                echo "用法: ecos set_board <board_name>"
+                echo "示例: ecos set_board c1"
+                exit 1
+            fi
+            set_board "$1"
+            ;;
+        "init_project")
+            if [[ $# -eq 0 ]]; then
+                err "缺少项目名称参数"
+                echo ""
+                echo "用法: ecos init_project <project_name>"
+                echo "示例: ecos init_project hello"
+                exit 1
+            fi
+            init_project "$1"
+            ;;
+        "help"|"-h"|"--help")
+            show_help
+            ;;
+        *)
+            err "未知命令: $command"
+            echo ""
+            show_help
+            exit 1
+            ;;
+    esac
+}
+
+main "$@"
