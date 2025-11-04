@@ -1,13 +1,8 @@
-/*
- * GPIO 驱动头文件
- * 定义GPIO相关的函数接口
- */
-
-#ifndef TINYGPIO_H__
-#define TINYGPIO_H__
+#ifndef GPIO_H__
+#define GPIO_H__
 
 #include "gpio_type.h"
-#include "stdio.h"
+
 /**
  * @brief GPIO配置函数
  * 
@@ -36,4 +31,5 @@ void gpio_set_level(gpio_num_t gpio_num, gpio_level_t level);
  * @return int32_t GPIO电平，0表示低电平，1表示高电平
  */
 int32_t gpio_get_level(gpio_num_t gpio_num);
+
 #endif

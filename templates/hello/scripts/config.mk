@@ -16,8 +16,6 @@
 COLOR_RED := $(shell echo "\033[1;31m")
 COLOR_END := $(shell echo "\033[0m")
 
-# 动态获取项目根目录路径
-ECOS_HOME := $(shell cd $(dir $(lastword $(MAKEFILE_LIST)))/../.. && pwd)
 
 ifeq ($(wildcard configs/.config),)
 $(warning $(COLOR_RED)Warning: configs/.config does not exist!$(COLOR_END))
@@ -25,9 +23,9 @@ $(warning $(COLOR_RED)To build the project, first run 'make menuconfig'.$(COLOR_
 endif
 
 Q            := @
-KCONFIG_PATH := $(ECOS_HOME)/tools/kconfig
-FIXDEP_PATH  := $(ECOS_HOME)/tools/fixdep
-Kconfig      := $(ECOS_HOME)/src/configs/Kconfig
+KCONFIG_PATH := $(PROJECT_PATH)/tools/kconfig
+FIXDEP_PATH  := $(PROJECT_PATH)/tools/fixdep
+Kconfig      := $(PROJECT_PATH)/configs/Kconfig
 rm-distclean += configs/generated configs/config configs/.config configs/.config.old
 silent := -s
 
@@ -49,7 +47,7 @@ menuconfig: $(MCONF) $(CONF) $(FIXDEP)
 	$(Q)$(CONF) $(silent) --syncconfig $(Kconfig)
 	@cp -r include/generated configs/
 	@cp -r include/config configs/
-	@rm -rf $(ECOS_HOME)/src/include
+	@rm -rf $(PROJECT_PATH)/include
 
 savedefconfig: $(CONF)
 	$(Q)$< $(silent) --$@=configs/defconfig $(Kconfig)

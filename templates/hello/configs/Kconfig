@@ -3,21 +3,27 @@ mainmenu "ECOS Embedded SDK Configuration"
 menu "Target Hardware Configuration"
     choice
         prompt "Target SoC Platform"
-        default SOC_RETROSOC
+        default StarrySky_C1
         
-    config SOC_RETROSOC
-        bool "RetroSoC Platform"
+    config StarrySky_C1
+        bool "StarrySky_C1 Platform"
         help
-          RetroSoC RISC-V based embedded platform
+          StarrySky_C1 RISC-V based embedded platform
+
+    config StarrySky_L3
+        bool "StarrySky_L3 Platform"
+        help
+          StarrySky_L3 RISC-V based embedded platform
     endchoice
     
-    config SOC_NAME
+    config BOARD_NAME
         string
-        default "retrosoc" if SOC_RETROSOC
+        default "starrysky_c1" if StarrySky_C1
+        default "starrysky_l3" if StarrySky_L3
         
     config ARCH_RISCV32
         bool
-        default y if SOC_RETROSOC
+        default y if StarrySky_C1 || StarrySky_L3
         
 endmenu
 

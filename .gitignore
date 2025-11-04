@@ -17,6 +17,22 @@
 !docs/
 !docs/**
 
+!board
+!board/**
+
+!components
+!components/**
+
+!templates
+!templates/**
+
+!devices
+!devices/**
+
+!example 
+!example/**
+
+
 !tools
 !tools/fixdep
 !tools/fixdep/**

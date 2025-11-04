@@ -4,7 +4,7 @@
 # RISC-V 交叉编译工具链前缀
 CROSS=riscv32-unknown-elf-
 BUILD_DIR := build
-
+PROJECT_PATH := $(shell pwd)
 # 包含配置文件
 -include configs/.config
 
@@ -42,49 +42,30 @@ FIRMWARE_NAME := main
 endif
 
 # 源文件列表
-SRC_PATH := ./start.s ./main.c \
-		./components/libc/src/string.c \
-		./components/libc/src/stdio.c \
-		./components/libgcc/src/div.S \
-		./components/libgcc/src/muldi3.S \
-		./components/libgcc/src/mulsi3.c \
-		./components/libgcc/src/lshrdi3.c \
-		./components/sys_uart/src/sys_uart.c \
-		./components/gpio/src/gpio.c \
-		./components/qspi/src/qspi.c \
-		./components/timer/src/timer.c \
-		./components/pwm/src/pwm.c \
-		./components/i2c/src/i2c.c \
-		./components/hp_uart/src/hp_uart.c \
-		./devices/st7735/src/st7735.c \
-		./devices/gy_sgp30/src/sgp30.c \
+SRC_PATH := ./start.s ./main.c 
+SRC_PATH += $(shell find $(ECOS_SDK_HOME)/components -name "*.c")
 
-
-CFLAGS += -I./configs \
-		-I./components/libc/include \
-		-I./components/libgcc/include \
-		-I./components/sys_uart/include \
-		-I./components/gpio/include \
-		-I./components/qspi/include \
-		-I./components/timer/include \
-		-I./components/pwm/include \
-		-I./components/i2c/include \
-		-I./components/hp_uart/include \
-		-I./devices/st7735/include \
-		-I./devices/gy_sgp30/include \
+CFLAGS += -I./configs 
+CFLAGS += $(addprefix -I,$(shell find $(ECOS_SDK_HOME)/components -type d))
 		
 # 链接脚本路径
 LDS_PATH := ./sections.lds
 
 # 主要构建目标：生成固件的所有格式文件
 $(FIRMWARE_NAME):
+	@echo "Building $(FIRMWARE_NAME)..."
 	@mkdir -p $(BUILD_DIR)
-	$(CROSS)cpp -P -o $(BUILD_DIR)/retrosoc_sections.lds $(LDS_PATH)
-	$(CROSS)gcc $(CFLAGS) -I./ -o $(BUILD_DIR)/$@ $(SRC_PATH)
-	$(CROSS)objcopy -O verilog $(BUILD_DIR)/$@ $(BUILD_DIR)/$(FIRMWARE_NAME).hex
-	sed -i 's/@30000000/@00000000/g' $(BUILD_DIR)/$(FIRMWARE_NAME).hex
-	$(CROSS)objcopy -O binary  $(BUILD_DIR)/$@ $(BUILD_DIR)/$(FIRMWARE_NAME).bin
-	$(CROSS)objdump -d $(BUILD_DIR)/$@ > $(BUILD_DIR)/$(FIRMWARE_NAME).txt
+	@$(CROSS)cpp -P -o $(BUILD_DIR)/retrosoc_sections.lds $(LDS_PATH)
+	@$(CROSS)gcc $(CFLAGS) -I./ -o $(BUILD_DIR)/$@ $(SRC_PATH)
+	@echo "Linking $(FIRMWARE_NAME)..."
+	@$(CROSS)objcopy -O verilog $(BUILD_DIR)/$@ $(BUILD_DIR)/$(FIRMWARE_NAME).hex
+	@echo "Post-processing $(FIRMWARE_NAME).hex..."
+	@sed -i 's/@30000000/@00000000/g' $(BUILD_DIR)/$(FIRMWARE_NAME).hex
+	@echo "Generating $(FIRMWARE_NAME).bin..."
+	@$(CROSS)objcopy -O binary  $(BUILD_DIR)/$@ $(BUILD_DIR)/$(FIRMWARE_NAME).bin
+	@echo "Generating $(FIRMWARE_NAME).txt..."
+	@$(CROSS)objdump -d $(BUILD_DIR)/$@ > $(BUILD_DIR)/$(FIRMWARE_NAME).txt
+	@echo "Done."
 
 # 清理构建产物
 clean:
@@ -96,8 +77,8 @@ clean_config:
 clean_all:
 	rm -rf $(BUILD_DIR) 
 	rm -rf configs/generated configs/config configs/.config configs/.config.old
-	rm -rf $(ECOS_HOME)/tools/fixdep/build
-	rm -rf $(ECOS_HOME)/tools/kconfig/build
+	rm -rf $(PROJECT_PATH)/tools/fixdep/build
+	rm -rf $(PROJECT_PATH)/tools/kconfig/build
 
 
 -include scripts/config.mk
