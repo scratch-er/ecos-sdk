@@ -22,7 +22,7 @@ else
 $(error bad target=$(NAME))
 endif
 
-include $(ECOS_HOME)/src/scripts/build.mk
+include $(ECOS_SDK_HOME)/tools/scripts/build.mk
 
 $(obj)/lexer.lex.o: $(obj)/parser.tab.h
 $(obj)/lexer.lex.c: lexer.l $(obj)/parser.tab.h	

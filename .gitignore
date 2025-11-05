@@ -17,6 +17,26 @@
 !docs/
 !docs/**
 
+!board
+!board/**
+
+!components
+!components/**
+
+!templates
+!templates/**
+
+!devices
+!devices/**
+
+!example 
+!example/**
+
+!bin/
+!bin/**
+
+!install.sh
+
 !tools
 !tools/fixdep
 !tools/fixdep/**
