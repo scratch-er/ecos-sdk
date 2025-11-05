@@ -96,9 +96,9 @@ install_sdk_core() {
 
 # 检查系统是否已有RISC-V工具链
 check_system_toolchain() {
-  if command -v riscv32-unknown-elf-gcc >/dev/null 2>&1; then
-    local gcc_path=$(which riscv32-unknown-elf-gcc)
-    local gcc_version=$(riscv32-unknown-elf-gcc --version 2>/dev/null | head -n1 || echo "未知版本")
+  if command -v riscv64-unknown-elf-gcc >/dev/null 2>&1; then
+    local gcc_path=$(which riscv64-unknown-elf-gcc)
+    local gcc_version=$(riscv64-unknown-elf-gcc --version 2>/dev/null | head -n1 || echo "未知版本")
     log "检测到系统已安装RISC-V工具链："
     log "  路径: $gcc_path"
     log "  版本: $gcc_version"
@@ -113,7 +113,7 @@ check_system_toolchain() {
 }
 
 check_zip_exists() {
-  local zip_path="$TOOLS_DIR/riscv.zip"
+  local zip_path="$TOOLS_DIR/riscv.tar.gz"
   local extracted_dir="$RISCV_DIR"
   
   # 检查是否已有解压的工具链目录且包含必要文件
@@ -181,7 +181,7 @@ install_toolchain() {
     # 解压ZIP包
     if [[ $zip_status -ne 0 ]]; then
         rm -rf "$RISCV_DIR"
-        if ! unzip -q "$zip_path" -d "$TOOLS_DIR"; then
+        if ! tar -xzf "$zip_path" -C "$TOOLS_DIR"; then
         err "解压失败，ZIP文件可能损坏，请重新下载"
         rm -f "$zip_path"
         exit 1
