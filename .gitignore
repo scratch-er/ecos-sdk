@@ -35,6 +35,7 @@
 !bin/
 !bin/**
 
+
 !install.sh
 
 !tools
@@ -42,6 +43,8 @@
 !tools/fixdep/**
 !tools/kconfig
 !tools/kconfig/**
-!tools/setup_env.sh
+!tools/scripts
+!tools/scripts/**
+
 
 
