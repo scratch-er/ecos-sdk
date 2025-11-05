@@ -82,6 +82,7 @@ install_sdk_core() {
     ensure_dir "$PREFIX/tools/"
     cp -r "$SCRIPT_DIR/tools/fixdep" "$PREFIX/tools/"
     cp -r "$SCRIPT_DIR/tools/kconfig" "$PREFIX/tools/"
+    cp -r "$SCRIPT_DIR/tools/scripts" "$PREFIX/tools/"
 
     # 拷贝示例工程
     cp -r "$SCRIPT_DIR/example" "$PREFIX/"
@@ -117,7 +118,7 @@ check_zip_exists() {
   local extracted_dir="$RISCV_DIR"
   
   # 检查是否已有解压的工具链目录且包含必要文件
-  if [[ -d "$extracted_dir/bin" ]] && [[ -x "$extracted_dir/bin/riscv32-unknown-elf-gcc" ]]; then
+  if [[ -d "$extracted_dir/bin" ]] && [[ -x "$extracted_dir/bin/riscv64-unknown-elf-gcc" ]]; then
     log "检测到已安装的RISC-V工具链：$extracted_dir"
     return 0  # 已存在，无需重新安装
   fi
@@ -152,7 +153,7 @@ install_toolchain() {
     
     # 2. 检查本地ZIP包或需要下载
     local url="https://github.com/ecoslab/ecos-embed-sdk/releases/download/riscv-tools/riscv.zip"
-    local zip_path="$TOOLS_DIR/riscv.zip"
+    local zip_path="$TOOLS_DIR/riscv.tar.gz"
     ensure_dir "$TOOLS_DIR"    
     local zip_status
     set +e  # 临时禁用 set -e
@@ -181,7 +182,7 @@ install_toolchain() {
     # 解压ZIP包
     if [[ $zip_status -ne 0 ]]; then
         rm -rf "$RISCV_DIR"
-        if ! tar -xzf "$zip_path" -C "$TOOLS_DIR"; then
+        if ! tar -zxvf "$zip_path" -C "$TOOLS_DIR"; then
         err "解压失败，ZIP文件可能损坏，请重新下载"
         rm -f "$zip_path"
         exit 1
@@ -200,11 +201,11 @@ add_env() {
     echo "export PATH=$PREFIX/bin:\$PATH" >> ~/.bashrc
   fi
 
-  if grep -q "export PATH=$PREFIX/toolchain/riscv/bin:\$PATH" ~/.bashrc; then
+  if grep -q "export PATH=$PREFIX/toolchain/riscv_unknown/bin:\$PATH" ~/.bashrc; then
     log "工具链环境变量已存在于 ~/.bashrc，跳过添加"
   else
     log "添加工具链环境变量到 ~/.bashrc..."
-    echo "export PATH=$PREFIX/toolchain/riscv/bin:\$PATH" >> ~/.bashrc
+    echo "export PATH=$PREFIX/toolchain/riscv_unknown/bin:\$PATH" >> ~/.bashrc
   fi
 
   if grep -q "export ECOS_SDK_HOME=$PREFIX" ~/.bashrc; then

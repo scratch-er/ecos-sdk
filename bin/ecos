@@ -50,18 +50,25 @@ set_board() {
     case "$board_name" in
         "c1")
             local board_file="starrysky_c1.h"
-            local source_path="$SDK_ROOT/board/$board_file"
-            local target_path="./board.h"
+            local make_file="Makefile_c1"
+            local board_source_path="$SDK_ROOT/board/$board_file"
+            local make_source_path="$SDK_ROOT/board/$make_file"
+            local board_target_path="./board.h"
+            local make_target_path="./Makefile"
             
-            if [[ ! -f "$source_path" ]]; then
-                err "开发板配置文件不存在: $source_path"
+            if [[ ! -f "$board_source_path" ]]; then
+                err "开发板配置文件不存在: $board_source_path"
                 exit 1
             fi
             
             # 拷贝开发板配置文件
-            cp "$source_path" "$target_path"
+            cp "$board_source_path" "$board_target_path"
             log "已设置开发板配置: starrysky_c1"
-            log "配置文件: $target_path"
+            log "配置文件: $board_target_path"
+            
+            # 拷贝Makefile
+            cp "$make_source_path" "$make_target_path"
+            log "已设置Makefile: $make_target_path"
             
             # 如果存在.ecos-project文件，更新开发板信息
             if [[ -f ".ecos-project" ]]; then
@@ -126,6 +133,11 @@ init_project() {
     echo "BOARD=c1" > ".ecos-project"
     log "已初始化项目: $project_name"
     log "配置文件: .ecos-project"
+
+    ecos set_board c1
+
+    mkdir -p configs 
+    cp -r "$SDK_ROOT/tools/scripts/" "."
 }
 
 # 主函数
