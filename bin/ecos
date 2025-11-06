@@ -125,6 +125,15 @@ init_project() {
         exit 1
     fi
     
+    # 检查项目模板是否存在
+    if [[ ! -d "$SDK_ROOT/templates/$project_name" ]]; then
+        err "项目模板不存在: $project_name"
+        echo ""
+        echo "可用项目模板:"
+        ls "$SDK_ROOT/templates"
+        exit 1
+    fi
+    
     # 从模板目录复制项目模板
     cp -r "$SDK_ROOT/templates/$project_name" "$project_name"
     cd "$project_name"
