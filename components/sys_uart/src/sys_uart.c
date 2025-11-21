@@ -3,24 +3,24 @@
 #include "board.h"
 
 void sys_uart_init(void){
-#ifdef CONFIG_STARRYSKY_C1
-    REG_UART_CLKDIV =  (uint32_t)(CONFIG_CPU_FREQ_MHZ * 1000000 / 115200);
-#elif CONFIG_STARRYSKY_L3
-    UART_REG_LC = UART_REG_LC | 0x80;
-    UART_REG_TH = 13 ; // 25M 115200bps
-    UART_REG_LC = 0x03; // OpenCores UART16550 core spec ver0.6 4.9 section
+#if SYS_UART_IP_ID == 0
+    REG_UART_0_CLKDIV =  (uint32_t)(CONFIG_CPU_FREQ_MHZ * 1000000 / 115200);
+#elif SYS_UART_IP_ID == 1
+    REG_UART_0_LC = REG_UART_0_LC | 0x80;
+    REG_UART_0_TH = 13 ; // 25M 115200bps
+    REG_UART_0_LC = 0x03; // OpenCores UART16550 core spec ver0.6 4.9 section
 #endif
 }
 
 void sys_putchar(char c){
-#ifdef CONFIG_STARRYSKY_C1
-    REG_UART_DATA = c;
-#elif CONFIG_STARRYSKY_L3
+#if SYS_UART_IP_ID == 0
+    REG_UART_0_DATA = c;
+#elif SYS_UART_IP_ID == 1
     uint8_t val;
     do
     {
-        val = UART_REG_LS;
+        val = REG_UART_0_LS;
     } while ((val & 0x20) == 0);
-    UART_REG_TH = c;
+    REG_UART_0_TH = c;
 #endif
 }
