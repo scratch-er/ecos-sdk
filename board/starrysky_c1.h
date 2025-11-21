@@ -46,8 +46,8 @@
 #define REG_CUST_QSPI_INTSTA  (*(volatile uint32_t*)0x03007028)  // QSPI中断状态寄存器
 
 /* ========== SYS_UART 接口寄存器 ====== */
-#define REG_UART_CLKDIV       (*(volatile uint32_t*)0x03000010)  // UART时钟分频寄存器
-#define REG_UART_DATA         (*(volatile uint32_t*)0x03000014)  // UART数据寄存器
+#define REG_UART_0_CLKDIV       (*(volatile uint32_t*)0x03000010)  // UART时钟分频寄存器
+#define REG_UART_0_DATA         (*(volatile uint32_t*)0x03000014)  // UART数据寄存器
 
 /* ========== 定时器 寄存器组 =========== */
 #define REG_TIM0_CONFIG       (*(volatile uint32_t*)0x0300005c)  // 定时器0配置寄存器
