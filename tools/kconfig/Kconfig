@@ -33,6 +33,11 @@ menu "Target Hardware Configuration"
         int
         default 0 if STARRYSKY_C1
         default 1 if STARRYSKY_L3
+
+    config SYS_UART_IP_ID
+        int
+        default 0 if STARRYSKY_C1
+        default 1 if STARRYSKY_L3
 endmenu
 
 menu "System Configuration"
