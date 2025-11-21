@@ -23,8 +23,16 @@ menu "Target Hardware Configuration"
         
     config ARCH_RISCV32
         bool
-        default y if STARRYSKY_C1 || STARRYSKY_L3
-        
+        default y if STARRYSKY_C1 
+
+    config ARCH_RISCV64
+        bool
+        default y if STARRYSKY_L3
+
+    config GPIO_IP_ID
+        int
+        default 0 if STARRYSKY_C1
+        default 1 if STARRYSKY_L3
 endmenu
 
 menu "System Configuration"
