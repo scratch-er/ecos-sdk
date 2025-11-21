@@ -3,29 +3,25 @@
 void main(void){
     
     sys_uart_init();
-    printf("GPIO test\n");
+    printf("PWM test\n");
 
-    gpio_config_t gpio_config_out = {
-        .pin_bit_mask = (1ULL << GPIO_NUM_0),
-        .mode = GPIO_MODE_OUTPUT,
+    pwm_config_t pwm_config = {
+        .pscr = 72 - 1,
+        .cmp = 1000 - 1,
     };
-    gpio_config(&gpio_config_out);
-
-    gpio_config_t gpio_config_in = {
-        .pin_bit_mask = (1ULL << GPIO_NUM_1),
-        .mode = GPIO_MODE_INPUT,
-    };
-    gpio_config(&gpio_config_in);
+    pwm_init(&pwm_config);
 
     while(1){
-        if(gpio_get_level(GPIO_NUM_1) == GPIO_LEVEL_HIGH){
-            gpio_set_level(GPIO_NUM_0, GPIO_LEVEL_HIGH);
+        for(uint32_t i = 0; i < 990; i+=5){
+            pwm_set_compare(PWM_CH0, i);
+            delay_ms(5);
         }
-        else{
-            gpio_set_level(GPIO_NUM_0, GPIO_LEVEL_LOW);
+        for(uint32_t i = 990; i > 0; i-=5){
+            pwm_set_compare(PWM_CH0, i);
+            delay_ms(5);
         }
-        
     }
+
 
 
 }
