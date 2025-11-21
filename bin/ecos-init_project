@@ -78,7 +78,7 @@ init_project() {
         log "Project '$new_project_name' created successfully in './$new_project_name'"
         exit 0
     else
-        cp -r "$SDK_ROOT/templates/$template_name" "$new_project_name"
+        cp -r "$SDK_ROOT/templates/$template_name/$target_board" "$new_project_name"
     fi
     cd "$new_project_name"
 

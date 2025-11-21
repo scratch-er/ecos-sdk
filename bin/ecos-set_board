@@ -89,18 +89,25 @@ set_board() {
             ;;
         "l3")
             local board_file="starrysky_l3.h"
-            local source_path="$SDK_ROOT/board/$board_file"
-            local target_path="./board.h"
+            local make_file="Makefile_l3"
+            local board_source_path="$SDK_ROOT/board/$board_file"
+            local make_source_path="$SDK_ROOT/board/$make_file"
+            local board_target_path="./board.h"
+            local make_target_path="./Makefile"
 
-            if [[ ! -f "$source_path" ]]; then
-                err "Board config file not found: $source_path"
+            if [[ ! -f "$board_source_path" ]]; then
+                err "Board config file not found: $board_source_path"
                 exit 1
             fi
 
             # Copy board config file
-            cp "$source_path" "$target_path"
+            cp "$board_source_path" "$board_target_path"
             log "Set board configuration to: starrysky_l3"
-            log "Config file: $target_path"
+            log "Config file: $board_target_path"
+
+            # Copy Makefile
+            cp "$make_source_path" "$make_target_path"
+            log "Set Makefile: $make_target_path"
 
             # Update project config file if it exists
             if [[ -f ".ecos-project" ]]; then
