@@ -3,17 +3,17 @@
 #include "board.h"
 
 static void gpio_set_output(uint32_t io_num){
-#ifdef CONFIG_STARRYSKY_C1
+#ifdef CONFIG_GPIO_IP_ID == 0
     REG_GPIO_DDR &= ~(0x01 << io_num);
-#elif CONFIG_STARRYSKY_L3
+#elif CONFIG_GPIO_IP_ID == 1
 
 #endif
 }
 
 static void gpio_set_input(uint32_t io_num){
-#ifdef CONFIG_STARRYSKY_C1
+#ifdef CONFIG_GPIO_IP_ID == 0
     REG_GPIO_DDR |= (0x01 << io_num);
-#elif CONFIG_STARRYSKY_L3
+#elif CONFIG_GPIO_IP_ID == 1
 
 #endif
 }
@@ -40,22 +40,22 @@ void gpio_config(const gpio_config_t* config)
 }
 
 void gpio_set_level(gpio_num_t gpio_num, gpio_level_t level){
-#ifdef CONFIG_STARRYSKY_C1
+#ifdef CONFIG_GPIO_IP_ID == 0
     if (level == GPIO_LEVEL_HIGH){
         REG_GPIO_DR |= ((uint32_t)0x01 << gpio_num);
     }
     else{
         REG_GPIO_DR &= ~((uint32_t)0x01 << gpio_num);
     }
-#elif CONFIG_STARRYSKY_L3
+#elif CONFIG_GPIO_IP_ID == 1
 
 #endif
 }
 
 int32_t gpio_get_level(gpio_num_t gpio_num){
-#ifdef CONFIG_STARRYSKY_C1
+#ifdef CONFIG_GPIO_IP_ID == 0
     return (REG_GPIO_DR >> gpio_num) & 0x01;
-#elif CONFIG_STARRYSKY_L3
+#elif CONFIG_GPIO_IP_ID == 1
     return 0;
 #endif
 }
