@@ -163,12 +163,11 @@ int vprintf(const char *fmt, va_list args) {
                                     int len = itoa_hex(value, buffer, 0);
                                     count += puts_helper(buffer);
                                     break;
+                                    }
                                 }
                             }
-                            break;
                         }
-                    break;
-                }
+                    }
                 
                 default: {
                     // 不支持的格式，输出原样
