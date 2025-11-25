@@ -50,16 +50,16 @@ set_board() {
         rm -f Makefile
         log "Removed Makefile for assembly project."
         log "Board configuration set to: $target_board_name"
-        cp "$SDK_ROOT/board/Makefile_${target_board_name}_asm" "./Makefile"
+        cp "$SDK_ROOT/board/${target_board_name}/Makefile_asm" "./Makefile"
         exit 0
     fi
 
     case "$target_board_name" in
         "c1")
-            local board_file="starrysky_c1.h"
-            local make_file="Makefile_c1"
-            local board_source_path="$SDK_ROOT/board/$board_file"
-            local make_source_path="$SDK_ROOT/board/$make_file"
+            local board_file="board.h"
+            local make_file="Makefile"
+            local board_source_path="$SDK_ROOT/board/StarrySkyC1/$board_file"
+            local make_source_path="$SDK_ROOT/board/StarrySkyC1/$make_file"
             local board_target_path="./board.h"
             local make_target_path="./Makefile"
 
@@ -88,10 +88,10 @@ set_board() {
             fi
             ;;
         "l3")
-            local board_file="starrysky_l3.h"
-            local make_file="Makefile_l3"
-            local board_source_path="$SDK_ROOT/board/$board_file"
-            local make_source_path="$SDK_ROOT/board/$make_file"
+            local board_file="board.h"
+            local make_file="Makefile"
+            local board_source_path="$SDK_ROOT/board/StarrySkyL3/$board_file"
+            local make_source_path="$SDK_ROOT/board/StarrySkyL3/$make_file"
             local board_target_path="./board.h"
             local make_target_path="./Makefile"
 
