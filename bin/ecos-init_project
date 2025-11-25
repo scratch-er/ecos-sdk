@@ -18,7 +18,7 @@ echo_available_templates() {
     echo "|------------------|----|----|"
     echo "| asm_hello        | √  | √  |"
     echo "| asm_gpio         | √  |    |"
-    echo "| gpio             |    | √  |"
+    echo "| gpio             | √  | √  |"
     echo "| hello            | √  | √  |"
     echo "| i2c_scan         |    | √  |"
     echo "| i2c_sgp30        |    | √  |"
