@@ -36,6 +36,38 @@ typedef enum {
     GPIO_NUM_29 = 29,
     GPIO_NUM_30 = 30,
     GPIO_NUM_31 = 31,
+    GPIO_NUM_32 = 32,
+    GPIO_NUM_33 = 33,
+    GPIO_NUM_34 = 34,
+    GPIO_NUM_35 = 35,
+    GPIO_NUM_36 = 36,
+    GPIO_NUM_37 = 37,
+    GPIO_NUM_38 = 38,
+    GPIO_NUM_39 = 39,
+    GPIO_NUM_40 = 40,
+    GPIO_NUM_41 = 41,
+    GPIO_NUM_42 = 42,
+    GPIO_NUM_43 = 43,
+    GPIO_NUM_44 = 44,
+    GPIO_NUM_45 = 45,
+    GPIO_NUM_46 = 46,
+    GPIO_NUM_47 = 47,
+    GPIO_NUM_48 = 48,
+    GPIO_NUM_49 = 49,
+    GPIO_NUM_50 = 50,
+    GPIO_NUM_51 = 51,
+    GPIO_NUM_52 = 52,
+    GPIO_NUM_53 = 53,
+    GPIO_NUM_54 = 54,
+    GPIO_NUM_55 = 55,
+    GPIO_NUM_56 = 56,
+    GPIO_NUM_57 = 57,
+    GPIO_NUM_58 = 58,
+    GPIO_NUM_59 = 59,
+    GPIO_NUM_60 = 60,
+    GPIO_NUM_61 = 61,
+    GPIO_NUM_62 = 62,
+    GPIO_NUM_63 = 63,
 } gpio_num_t;
 
 typedef enum{
@@ -49,7 +81,7 @@ typedef enum{
 } gpio_level_t;
 
 typedef struct {
-    uint32_t pin_bit_mask; // 引脚位掩码，用于设置或读取多个引脚
+    uint64_t pin_bit_mask; // 引脚位掩码，用于设置或读取多个引脚
     gpio_mode_t mode; // GPIO模式，输入或输出
 } gpio_config_t;
 
