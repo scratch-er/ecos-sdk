@@ -12,6 +12,18 @@
 #define REG_GPIO_0_IOFCFG               (*((volatile uint32_t *)0x1000201C))
 #define REG_GPIO_0_PINMUX               (*((volatile uint32_t *)0x10002020))
 
+/* ========================== GPIO_0 寄存器组 ================================ */
+#define GPIO_GROUP_1                    1
+#define REG_GPIO_1_PADDIR               (*((volatile uint32_t *)0x10003000))
+#define REG_GPIO_1_PADIN                (*((volatile uint32_t *)0x10003004))
+#define REG_GPIO_1_PADOUT               (*((volatile uint32_t *)0x10003008))
+#define REG_GPIO_1_INTEN                (*((volatile uint32_t *)0x1000300C))
+#define REG_GPIO_1_INTTYPE0             (*((volatile uint32_t *)0x10003010))
+#define REG_GPIO_1_INTTYPE1             (*((volatile uint32_t *)0x10003014))
+#define REG_GPIO_1_INTSTAT              (*((volatile uint32_t *)0x10003018))
+#define REG_GPIO_1_IOFCFG               (*((volatile uint32_t *)0x1000301C))
+#define REG_GPIO_1_PINMUX               (*((volatile uint32_t *)0x10003020))
+
 /* ========================== SYS_UART 寄存器组 ================================ */
 #define REG_UART_0_RB                   (*((volatile uint8_t *)0x10000000))
 #define REG_UART_0_TH                   (*((volatile uint8_t *)0x10000000))

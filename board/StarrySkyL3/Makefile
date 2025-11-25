@@ -6,7 +6,7 @@ PROJECT_PATH := $(shell pwd)
 
 CFLAGS := -mabi=lp64 \
 	  -march=rv64ifd_zifencei \
-	  -Wl,-Bstatic,-T,./starrysky-l3.ld,--strip-debug \
+	  -Wl,-Bstatic,-T,$(BUILD_DIR)/retrosoc_sections.lds,--strip-debug \
 	  -ffreestanding \
 	  -nostdlib
 
@@ -38,6 +38,8 @@ SRC_PATH += $(shell find $(ECOS_SDK_HOME)/components/sys_uart -name "*.c")
 SRC_PATH += $(shell find $(ECOS_SDK_HOME)/components/libgcc -name "*.c")
 SRC_PATH += $(shell find $(ECOS_SDK_HOME)/components/libgcc -name "*.S")
 SRC_PATH += $(shell find $(ECOS_SDK_HOME)/components/libc -name "*.c")
+SRC_PATH += $(shell find $(ECOS_SDK_HOME)/components/gpio -name "*.c")
+
 
 CFLAGS += -I./configs 
 CFLAGS += $(addprefix -I,$(shell find $(ECOS_SDK_HOME)/components -type d))
