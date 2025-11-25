@@ -2,6 +2,8 @@ ENTRY(_start)
 
 SECTIONS {
   /* _pmem_start and _entry_offset are defined in LDFLAGS */
+  _pmem_start = 0x30000000;
+  _entry_offset = 0x0;
   . = _pmem_start + _entry_offset;
   .text : {
     *(entry)
