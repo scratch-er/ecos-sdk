@@ -46,7 +46,7 @@ static int itoa_decimal(int value, char *buffer) {
 }
 
 // 辅助函数：将整数转换为十六进制字符串
-static int itoa_hex(unsigned int value, char *buffer, int uppercase) {
+static int itoa_hex(unsigned long value, char *buffer, int uppercase) {
     char temp[17]; // 足够存储 64 位十六进制
     int i = 0;
     const char *digits = uppercase ? "0123456789ABCDEF" : "0123456789abcdef";
@@ -137,7 +137,7 @@ int vprintf(const char *fmt, va_list args) {
                     sys_putchar('0');
                     sys_putchar('x');
                     count += 2;
-                    int len = itoa_hex((unsigned int)ptr, buffer, 0);
+                    int len = itoa_hex((unsigned long)ptr, buffer, 0);
                     count += puts_helper(buffer);
                     break;
                 }
