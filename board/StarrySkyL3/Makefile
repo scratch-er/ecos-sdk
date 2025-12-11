@@ -6,7 +6,8 @@ PROJECT_PATH := $(shell pwd)
 
 CFLAGS := -mabi=lp64 \
 	  -march=rv64ifd_zifencei \
-	  -Wl,-Bstatic,-T,$(BUILD_DIR)/retrosoc_sections.lds,--strip-debug \
+	  -mcmodel=medany \
+	  -Wl,-Bstatic,--strip-debug \
 	  -ffreestanding \
 	  -nostdlib
 
@@ -33,35 +34,56 @@ FIRMWARE_NAME := main
 endif
 
 # 源文件列表
-SRC_PATH := ./start.s ./main.c 
-SRC_PATH += $(shell find $(ECOS_SDK_HOME)/components/sys_uart -name "*.c")
-SRC_PATH += $(shell find $(ECOS_SDK_HOME)/components/libgcc -name "*.c")
-SRC_PATH += $(shell find $(ECOS_SDK_HOME)/components/libgcc -name "*.S")
-SRC_PATH += $(shell find $(ECOS_SDK_HOME)/components/libc -name "*.c")
-SRC_PATH += $(shell find $(ECOS_SDK_HOME)/components/gpio -name "*.c")
+SDK_SRC_PATH += $(shell find $(ECOS_SDK_HOME)/components/sys_uart -name "*.c")
+SDK_SRC_PATH += $(shell find $(ECOS_SDK_HOME)/components/libgcc -name "*.c")
+SDK_SRC_PATH += $(shell find $(ECOS_SDK_HOME)/components/libgcc -name "*.S")
+SDK_SRC_PATH += $(shell find $(ECOS_SDK_HOME)/components/libc -name "*.c")
+SDK_SRC_PATH += $(shell find $(ECOS_SDK_HOME)/components/gpio -name "*.c")
+SDK_SRC_PATH += $(shell find $(ECOS_SDK_HOME)/components/i2c -name "*.c")
 
+# Firmware Sources
+FIRMWARE_SRC_PATH := ./start.s ./main.c $(SDK_SRC_PATH)
+
+# loader Sources
+LOADER_SRC_PATH := loader/start.s loader/loader.c loader/payload.S $(SDK_SRC_PATH)
 
 CFLAGS += -I./configs 
 CFLAGS += $(addprefix -I,$(shell find $(ECOS_SDK_HOME)/components -type d))
 # CFLAGS += $(addprefix -I,$(shell find $(ECOS_SDK_HOME)/devices -type d))
 		
 # 链接脚本路径
-LDS_PATH := ./sections.lds
+FIRMWARE_LDS_PATH := ./sections.lds
+LOADER_LDS_PATH := ./loader/loader.lds
 
 # 主要构建目标：生成固件的所有格式文件
 $(FIRMWARE_NAME):
-	@echo "Building $(FIRMWARE_NAME)..."
+	@echo "Building APP $(FIRMWARE_NAME)..."
 	@mkdir -p $(BUILD_DIR)
-	@$(CROSS)cpp -P -o $(BUILD_DIR)/retrosoc_sections.lds $(LDS_PATH)
-	@$(CROSS)gcc $(CFLAGS) -I./ -o $(BUILD_DIR)/$@ $(SRC_PATH)
-	@echo "Linking $(FIRMWARE_NAME)..."
-	@$(CROSS)objcopy -O verilog $(BUILD_DIR)/$@ $(BUILD_DIR)/$(FIRMWARE_NAME).hex
-	@echo "Post-processing $(FIRMWARE_NAME).hex..."
+
+	@echo "Preprocess APP linker script..."
+	@$(CROSS)cpp -P $(CFLAGS) -o $(BUILD_DIR)/app.lds $(FIRMWARE_LDS_PATH)
+	@echo "Compiling APP..."
+	@$(CROSS)gcc $(CFLAGS) -I./ -T $(BUILD_DIR)/app.lds -o $(BUILD_DIR)/app.elf $(FIRMWARE_SRC_PATH)
+	@$(CROSS)objcopy -O binary  $(BUILD_DIR)/app.elf $(BUILD_DIR)/app.bin
+
+ifdef CONFIG_LINK_TARGET_FLASH
+	@echo "Skipping Bootloader (Target is FLASH)..."
+	@$(CROSS)objcopy -O verilog $(BUILD_DIR)/app.elf $(BUILD_DIR)/$(FIRMWARE_NAME).hex
 	@sed -i 's/@30000000/@00000000/g' $(BUILD_DIR)/$(FIRMWARE_NAME).hex
-	@echo "Generating $(FIRMWARE_NAME).bin..."
-	@$(CROSS)objcopy -O binary  $(BUILD_DIR)/$@ $(BUILD_DIR)/$(FIRMWARE_NAME).bin
-	@echo "Generating $(FIRMWARE_NAME).txt..."
-	@$(CROSS)objdump -d $(BUILD_DIR)/$@ > $(BUILD_DIR)/$(FIRMWARE_NAME).txt
+	@$(CROSS)objcopy -O binary  $(BUILD_DIR)/app.elf $(BUILD_DIR)/$(FIRMWARE_NAME).bin
+	@$(CROSS)objdump -d $(BUILD_DIR)/app.elf > $(BUILD_DIR)/$(FIRMWARE_NAME).txt
+else
+	@echo "Building Bootloader..."
+	@$(CROSS)cpp -P -o $(BUILD_DIR)/loader.lds $(LOADER_LDS_PATH)
+	@$(CROSS)gcc $(CFLAGS) -I./ -T $(BUILD_DIR)/loader.lds -o $(BUILD_DIR)/loader.elf $(LOADER_SRC_PATH)
+
+	@echo "Final linking ..."
+	@$(CROSS)objcopy -O verilog $(BUILD_DIR)/loader.elf $(BUILD_DIR)/$(FIRMWARE_NAME).hex
+	@sed -i 's/@30000000/@00000000/g' $(BUILD_DIR)/$(FIRMWARE_NAME).hex
+
+	@$(CROSS)objcopy -O binary  $(BUILD_DIR)/loader.elf $(BUILD_DIR)/$(FIRMWARE_NAME).bin
+	@$(CROSS)objdump -d $(BUILD_DIR)/loader.elf > $(BUILD_DIR)/$(FIRMWARE_NAME).txt
+endif
 	@echo "Done."
 
 # 清理构建产物

@@ -109,6 +109,12 @@ set_board() {
             cp "$make_source_path" "$make_target_path"
             log "Set Makefile: $make_target_path"
 
+            # Copy bootloader
+            local bootloader_source_path="$SDK_ROOT/board/StarrySkyL3/loader"
+            local bootloader_target_path="./loader"
+            cp -r "$bootloader_source_path" "$bootloader_target_path"
+            log "Set bootloader: $bootloader_target_path"
+
             # Update project config file if it exists
             if [[ -f ".ecos-project" ]]; then
                 if grep -q "BOARD=" ".ecos-project"; then
