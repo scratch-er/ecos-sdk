@@ -32,4 +32,13 @@ void gpio_set_level(gpio_num_t gpio_num, gpio_level_t level);
  */
 int32_t gpio_get_level(gpio_num_t gpio_num);
 
+/**
+ * @brief GPIO配置单个引脚复用功能
+ * 
+ * 根据给定的引脚号和复用功能，配置GPIO引脚的复用功能。
+ * 
+ * @param gpio_num GPIO引脚号，枚举类型gpio_num_t
+ * @param func GPIO复用功能，枚举类型gpio_function_t
+ */
+void gpio_set_function(gpio_num_t gpio_num, gpio_func_t func);
 #endif

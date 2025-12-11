@@ -123,3 +123,49 @@ int32_t gpio_get_level(gpio_num_t gpio_num){
     return 0;
 #endif
 }
+
+void gpio_set_function(gpio_num_t gpio_num, gpio_func_t func){
+    uint8_t io_group = gpio_num / 32;
+    uint8_t io_offset = gpio_num % 32;
+#if CONFIG_GPIO_IP_ID == 1
+    switch (io_group){
+        case 0:
+            switch (func){
+                case 0: // GPIO_FUNCTION_GPIO
+                    REG_GPIO_0_IOFCFG = REG_GPIO_0_IOFCFG & ~(0x01 << (io_offset));
+                    break;
+                case 1: // GPIO_FUNCTION_GPIO_MUX_0
+                    REG_GPIO_0_IOFCFG = REG_GPIO_0_IOFCFG | (0x01 << (io_offset));
+                    REG_GPIO_0_PINMUX = REG_GPIO_0_PINMUX & ~(0x01 << (io_offset));
+                    break;
+                case 2: // GPIO_FUNCTION_GPIO_MUX_1
+                    REG_GPIO_0_IOFCFG = REG_GPIO_0_IOFCFG | (0x01 << (io_offset));
+                    REG_GPIO_0_PINMUX = REG_GPIO_0_PINMUX | (0x01 << (io_offset));
+                    break;
+                default:
+                    break;
+            }
+            break;
+        case 1:
+            switch (func){
+                case 0: // GPIO_FUNCTION_GPIO
+                    REG_GPIO_1_IOFCFG = REG_GPIO_1_IOFCFG & ~(0x01 << (io_offset));
+                    break;
+                case 1: // GPIO_FUNCTION_GPIO_OD
+                    REG_GPIO_1_IOFCFG = REG_GPIO_1_IOFCFG | (0x01 << (io_offset));
+                    REG_GPIO_1_PINMUX = REG_GPIO_1_PINMUX & ~(0x01 << (io_offset));
+                    break;
+                case 2: // GPIO_FUNCTION_GPIO_MUX_1
+                    REG_GPIO_1_IOFCFG = REG_GPIO_1_IOFCFG | (0x01 << (io_offset));
+                    REG_GPIO_1_PINMUX = REG_GPIO_1_PINMUX | (0x01 << (io_offset));
+                    break;
+                default:
+                    break;
+            }
+            break;
+        default:
+            break;
+    }
+#else
+#endif
+}

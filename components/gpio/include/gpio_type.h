@@ -80,6 +80,12 @@ typedef enum{
     GPIO_LEVEL_HIGH = 1,
 } gpio_level_t;
 
+typedef enum{
+    GPIO_FUNCTION_0 = 0,
+    GPIO_FUNCTION_1 = 1,
+    GPIO_FUNCTION_2 = 2,
+} gpio_func_t;
+
 typedef struct {
     uint64_t pin_bit_mask; // 引脚位掩码，用于设置或读取多个引脚
     gpio_mode_t mode; // GPIO模式，输入或输出
