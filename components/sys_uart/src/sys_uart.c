@@ -24,3 +24,9 @@ void sys_putchar(char c){
     REG_UART_0_TH = c;
 #endif
 }
+
+void sys_putstr(char *str){
+    while (*str!='\0') {
+        sys_putchar(*str++);
+    }
+}

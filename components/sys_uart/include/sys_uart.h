@@ -5,5 +5,6 @@
 
 void sys_uart_init(void);
 void sys_putchar(char c);
+void sys_putstr(char *str);
 
 #endif
