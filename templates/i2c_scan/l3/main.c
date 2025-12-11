@@ -6,19 +6,19 @@ static bool i2c_probe_device_quiet(uint8_t addr) {
     // 由于这是嵌入式环境，我们直接通过寄存器操作来检测ACK
     
     // 发送START + 写地址
-    REG_CUST_I2C_TXR = (addr << 1) | 0; // 写操作
-    REG_CUST_I2C_CMD = I2C_START_WRITE;
+    REG_I2C_0_TXR = (addr << 1) | 0; // 写操作
+    REG_I2C_0_CMD = I2C_START_WRITE;
     
     // 等待传输完成
-    while((REG_CUST_I2C_SR & I2C_STATUS_TIP) == 0);
-    while((REG_CUST_I2C_SR & I2C_STATUS_TIP) != 0);
+    while((REG_I2C_0_SR & I2C_STATUS_TIP) == 0);
+    while((REG_I2C_0_SR & I2C_STATUS_TIP) != 0);
     
     // 检查ACK
-    bool device_found = !(REG_CUST_I2C_SR & I2C_STATUS_RXACK);
+    bool device_found = !(REG_I2C_0_SR & I2C_STATUS_RXACK);
     
     // 发送STOP
-    REG_CUST_I2C_CMD = I2C_STOP;
-    while((REG_CUST_I2C_SR & I2C_STATUS_BUSY) == I2C_STATUS_BUSY);
+    REG_I2C_0_CMD = I2C_STOP;
+    while((REG_I2C_0_SR & I2C_STATUS_BUSY) == I2C_STATUS_BUSY);
     
     return device_found;
 }
@@ -92,20 +92,15 @@ void i2c_print_scan_result(uint8_t start_addr, uint8_t end_addr) {
             
             // 添加一些常见设备的识别
             switch (found_devices[i]) {
-                case 0x3C:
                 case 0x3D:
                     printf(" (OLED Display SSD1306)");
                     break;
                 case 0x48:
                     printf(" (ADS1115 ADC or TMP102 Temperature)");
                     break;
-                case 0x50:
                 case 0x51:
-                case 0x52:
-                case 0x53:
-                case 0x54:
-                case 0x55:
-                case 0x56:
+                    printf(" (PCF8563 RTC)");
+                    break;
                 case 0x57:
                     printf(" (EEPROM 24CXX)");
                     break;
@@ -115,7 +110,6 @@ void i2c_print_scan_result(uint8_t start_addr, uint8_t end_addr) {
                 case 0x68:
                     printf(" (DS1307 RTC or MPU6050 IMU)");
                     break;
-                case 0x76:
                 case 0x77:
                     printf(" (BMP280/BME280 Pressure)");
                     break;

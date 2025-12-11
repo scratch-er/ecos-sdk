@@ -20,7 +20,7 @@ echo_available_templates() {
     echo "| asm_gpio         | √  |    |"
     echo "| gpio             | √  | √  |"
     echo "| hello            | √  | √  |"
-    echo "| i2c_scan         |    | √  |"
+    echo "| i2c_scan         | √  | √  |"
     echo "| i2c_sgp30        |    | √  |"
     echo "| minesweeper      |    | √  |"
     echo "| pwm              |    | √  |"
