@@ -9,7 +9,7 @@
 // Components headers
 // #include "timer.h"
 // #include "qspi.h"
-#include "gpio.h"
+// #include "gpio.h"
 // #include "pwm.h"
 // #include "hp_uart.h"
 // #include "i2c.h"
